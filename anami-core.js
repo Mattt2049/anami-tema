@@ -84,17 +84,7 @@
         atualizar();
     }
 
-    /* ---------- 2. tarja: 12x -> 3x ---------- */
-
-    function ajustarTarja() {
-        document.querySelectorAll('.banner-tarja-item-text span').forEach(function (el) {
-            if (/^Em até 12x sem juros$/i.test(textoLimpo(el))) {
-                el.textContent = 'Em até 3x sem juros';
-            }
-        });
-    }
-
-    /* ---------- 3. preço da PDP ---------- */
+    /* ---------- 2. preço da PDP ---------- */
 
     function paraNumero(texto) {
         if (!texto) return NaN;
@@ -146,7 +136,7 @@
             });
     }
 
-    /* ---------- 4. CTA de prescrição na PDP ---------- */
+    /* ---------- 3. CTA de prescrição na PDP ---------- */
 
     var ICONE_WHATSAPP =
         '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 0 0 5.4 1.3h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.3-6.1-3.5-8.3Zm-8.4 18.1h-.1a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.7 9.7 0 0 1-1.5-5.2C2.1 6.4 6.5 2 12.1 2c2.7 0 5.1 1 7 2.9s2.9 4.3 2.9 7c0 5.4-4.5 9.7-9.9 9.7Zm5.4-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-1.5-.7-2.5-1.3-3.5-2.9-.3-.5.3-.5.8-1.7.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.7s1.2 3.1 1.4 3.3c.2.2 2.4 3.7 5.8 5.1.8.3 1.4.5 1.8.6.8.3 1.5.2 2.1.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4 0-.1-.2-.2-.5-.3Z"/></svg>';
@@ -196,7 +186,7 @@
         );
     }
 
-    /* ---------- 5. dados legais no rodapé ---------- */
+    /* ---------- 4. dados legais no rodapé ---------- */
 
     function moverDadosLegais() {
         var bloco = document.getElementById('anami-dados-legais');
@@ -232,7 +222,7 @@
     /* ---------- inicialização ---------- */
 
     function iniciar() {
-        var modulos = [iniciarCabecalho, ajustarTarja, iniciarProduto, iniciarDadosLegais, iniciarTrackingWhatsApp];
+        var modulos = [iniciarCabecalho, iniciarProduto, iniciarDadosLegais, iniciarTrackingWhatsApp];
         modulos.forEach(function (m) {
             try { m(); } catch (e) {
                 if (window.console) console.warn('[anami] falha em ' + m.name, e);
@@ -241,7 +231,6 @@
     }
 
     quandoPronto(iniciar);
-    window.addEventListener('load', ajustarTarja, { once: true });
 
     window.anami = { versao: VERSAO, rastrear: rastrear };
 })();

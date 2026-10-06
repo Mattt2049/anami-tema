@@ -8,7 +8,7 @@ Tema da loja Anami Fórmulas na Loja Integrada (anamiformulas.com.br), servido v
 |---|---|
 | `anami-tokens.css` | Cores, raios e transições em variáveis. Base que vai junto na migração. |
 | `anami-tema.css` | Componentes: header, minicarrinho, catálogo, PDP, descrição, rodapé. |
-| `anami-core.js` | Header com vidro, preço da PDP, CTA de prescrição, tarja 3x, dados legais, tracking de WhatsApp. |
+| `anami-core.js` | Header com vidro, preço da PDP, CTA de prescrição, dados legais, tracking de WhatsApp. |
 | `painel/cabecalho.html` | O que vai no campo **Cabeçalho** do painel. |
 | `painel/rodape.html` | O que vai no campo **Rodapé** do painel (dados legais e schema ficam inline). |
 
