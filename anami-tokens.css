@@ -1,0 +1,33 @@
+/* ============================================================
+   ANAMI FÓRMULAS — TOKENS (design system)
+   Única fonte de cores, raios e transições. Vai junto na migração.
+   ============================================================ */
+:root {
+    /* Marca */
+    --anami-roxo: #5424DC;
+    --anami-roxo-escuro: #3D1A9E;
+    --anami-roxo-profundo: #2D137C;
+    --anami-roxo-claro: #DED4FF;
+    --anami-verde: #00A650;
+
+    /* Neutros */
+    --anami-branco: #FFFFFF;
+    --anami-texto: #211A27;
+    --anami-texto-preco: #222222;
+    --anami-cinza: #8C8C8C;
+
+    /* Header com vidro (antes: .36 no desktop) */
+    --anami-vidro-desktop: rgba(84, 36, 220, .78);
+    --anami-vidro-mobile: rgba(84, 36, 220, .88);
+    --anami-vidro-borda: rgba(255, 255, 255, .18);
+    --anami-vidro-sombra: 0 8px 30px rgba(33, 26, 39, .18);
+
+    /* Forma e movimento */
+    --anami-raio: 4px;
+    --anami-raio-selo: 3px;
+    --anami-transicao: .2s ease;
+
+    /* Foco */
+    --anami-foco-claro: rgba(255, 255, 255, .9);
+    --anami-foco-roxo: rgba(61, 26, 158, .28);
+}
