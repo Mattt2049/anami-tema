@@ -1,0 +1,6 @@
+{
+  "name": "anami-tema-tools",
+  "private": true,
+  "description": "Teste local do tema (jsdom). Rode: npm install && node teste-home.js",
+  "dependencies": { "jsdom": "^24.1.3" }
+}
