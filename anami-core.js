@@ -6,7 +6,7 @@
 (function () {
     'use strict';
 
-    var VERSAO = '1.0.0';
+    var VERSAO = '1.1.0';
     var WHATSAPP = '5511950358443';
     var CNPJ = '46.555.995/0001-58';
 
@@ -43,6 +43,21 @@
         } catch (e) { /* tracking nunca quebra a loja */ }
     }
 
+    /* Banners do painel não aceitam data-*: a origem vem da posição
+       (full/mini) e o nome vem do alt ou do arquivo da imagem. */
+    function origemBanner(link) {
+        var area = link.closest('.secao-banners .banner, .banner');
+        if (!area) return null;
+        var tipo = area.classList.contains('cheio') ? 'banner-full'
+            : (/mini/.test(area.className) ? 'banner-mini' : 'banner');
+        var img = link.querySelector('img');
+        var nome = img ? (img.getAttribute('alt') || '') : '';
+        if (!nome && img) {
+            nome = (img.getAttribute('src') || '').split('/').pop().replace(/\.\w+$/, '');
+        }
+        return { origem: tipo, banner: nome.slice(0, 100) };
+    }
+
     /* Qualquer link de WhatsApp na loja vira evento.
        Para marcar a origem, use data-anami-origem="home-hero", etc. */
     function iniciarTrackingWhatsApp() {
@@ -53,9 +68,11 @@
             if (!link) return;
 
             var ehPrescricao = link.hasAttribute('data-anami-prescricao');
+            var banner = link.hasAttribute('data-anami-origem') ? null : origemBanner(link);
             rastrear(ehPrescricao ? 'enviar_prescricao' : 'clique_whatsapp', {
-                origem: link.getAttribute('data-anami-origem') || 'indefinida',
+                origem: link.getAttribute('data-anami-origem') || (banner && banner.origem) || 'indefinida',
                 produto: link.getAttribute('data-anami-produto') || '',
+                banner: banner ? banner.banner : '',
                 pagina: location.pathname
             });
         }, true);
