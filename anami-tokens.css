@@ -1,33 +1,51 @@
 /* ============================================================
    ANAMI FÓRMULAS — TOKENS (design system)
-   Única fonte de cores, raios e transições. Vai junto na migração.
+   Única fonte de cores, fontes, raios e transições. Vai junto na migração.
    ============================================================ */
 :root {
     /* Marca */
-    --anami-roxo: #5424DC;
+    --anami-roxo: #5F18EF;
+    --anami-roxo-claro: #7F41FC;
     --anami-roxo-escuro: #3D1A9E;
     --anami-roxo-profundo: #2D137C;
-    --anami-roxo-claro: #DED4FF;
+    --anami-roxo-noite: #1E0763;
+    --anami-lavanda: #EFE9FF;
+    --anami-lavanda-texto: #DED4FF;
+    --anami-menta: #CFEAE3;
+    --anami-menta-escura: #2E6B5E;
     --anami-verde: #00A650;
 
     /* Neutros */
     --anami-branco: #FFFFFF;
+    --anami-papel: #F7F7F7;
+    --anami-linha: #E4E1E8;
     --anami-texto: #211A27;
+    --anami-texto-suave: #5B5462;
     --anami-texto-preco: #222222;
     --anami-cinza: #8C8C8C;
 
-    /* Header com vidro (antes: .36 no desktop) */
-    --anami-vidro-desktop: rgba(84, 36, 220, .78);
-    --anami-vidro-mobile: rgba(84, 36, 220, .88);
+    /* Tipografia */
+    --anami-fonte: "League Spartan", "Segoe UI", Roboto, Arial, sans-serif;
+
+    /* Header com vidro */
+    --anami-vidro-desktop: rgba(95, 24, 239, .86);
+    --anami-vidro-mobile: rgba(95, 24, 239, .92);
     --anami-vidro-borda: rgba(255, 255, 255, .18);
     --anami-vidro-sombra: 0 8px 30px rgba(33, 26, 39, .18);
 
     /* Forma e movimento */
-    --anami-raio: 4px;
-    --anami-raio-selo: 3px;
+    --anami-raio: 10px;
+    --anami-raio-card: 16px;
+    --anami-raio-bloco: 28px;
+    --anami-raio-selo: 6px;
+    --anami-sombra-card: 0 14px 34px rgba(33, 26, 39, .10);
+    --anami-sombra-suave: 0 8px 24px rgba(33, 26, 39, .06);
     --anami-transicao: .2s ease;
 
     /* Foco */
     --anami-foco-claro: rgba(255, 255, 255, .9);
-    --anami-foco-roxo: rgba(61, 26, 158, .28);
+    --anami-foco-roxo: rgba(95, 24, 239, .32);
+
+    /* Larguras */
+    --anami-largura: 1180px;
 }

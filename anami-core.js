@@ -1,12 +1,12 @@
 /* ============================================================
-   ANAMI FÓRMULAS — CORE JS (Loja Integrada)
-   Substitui: "cabeçalho v2", "12 para 3 vezes", "botão enviar
-   prescrição", "Redesign do produto" e o script dos dados legais.
+   ANAMI FÓRMULAS — CORE JS (Loja Integrada + tema NVitrine)
+   Módulos: tracking de WhatsApp, cabeçalho (botão "Enviar receita"),
+   menu, botão flutuante, página de produto, dados legais e seções da home.
    ============================================================ */
 (function () {
     'use strict';
 
-    var VERSAO = '1.1.0';
+    var VERSAO = '1.2.0';
     var WHATSAPP = '5511950358443';
     var CNPJ = '46.555.995/0001-58';
 
@@ -22,6 +22,23 @@
         }
     }
 
+    /* O tema NVitrine monta cabeçalho, menu e rodapé no DOMContentLoaded e
+       avisa com o evento ns:onafterload. Tudo que mexe nessas áreas espera por ele. */
+    function quandoTemaPronto(fn) {
+        var feito = false;
+        function rodar() {
+            if (feito) return;
+            feito = true;
+            try { fn(); } catch (e) { if (window.console) console.warn('[anami]', e); }
+        }
+        if (window.anamiTemaPronto) return rodar();
+        document.addEventListener('ns:onafterload', rodar, { once: true });
+        quandoPronto(function () {
+            if (!window.NSThemeData) { setTimeout(rodar, 0); }
+            setTimeout(rodar, 3000);
+        });
+    }
+
     function textoLimpo(el) {
         return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
     }
@@ -29,6 +46,29 @@
     function emPaginaDeProduto() {
         return !!document.querySelector('.principal .acoes-produto');
     }
+
+    function zap(mensagem) {
+        return 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(mensagem);
+    }
+
+    function criar(html) {
+        var t = document.createElement('template');
+        t.innerHTML = html.trim();
+        return t.content.firstElementChild;
+    }
+
+    function aoMudarEstado(fn) {
+        if (window.jQuery) {
+            window.jQuery(document.body).on('user_state_changed minicart_state_changed', function () {
+                setTimeout(fn, 50);
+            });
+        }
+    }
+
+    var ICONE_WHATSAPP =
+        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 0 0 5.4 1.3h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.3-6.1-3.5-8.3Zm-8.4 18.1h-.1a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.7 9.7 0 0 1-1.5-5.2C2.1 6.4 6.5 2 12.1 2c2.7 0 5.1 1 7 2.9s2.9 4.3 2.9 7c0 5.4-4.5 9.7-9.9 9.7Zm5.4-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-1.5-.7-2.5-1.3-3.5-2.9-.3-.5.3-.5.8-1.7.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.7s1.2 3.1 1.4 3.3c.2.2 2.4 3.7 5.8 5.1.8.3 1.4.5 1.8.6.8.3 1.5.2 2.1.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4 0-.1-.2-.2-.5-.3Z"/></svg>';
+
+    var MENSAGEM_RECEITA = 'Olá! Quero enviar minha receita para orçamento.';
 
     /* ---------- tracking ---------- */
 
@@ -58,8 +98,6 @@
         return { origem: tipo, banner: nome.slice(0, 100) };
     }
 
-    /* Qualquer link de WhatsApp na loja vira evento.
-       Para marcar a origem, use data-anami-origem="home-hero", etc. */
     function iniciarTrackingWhatsApp() {
         document.addEventListener('click', function (ev) {
             var link = ev.target.closest && ev.target.closest(
@@ -76,32 +114,77 @@
                 pagina: location.pathname
             });
         }, true);
+
+        document.addEventListener('click', function (ev) {
+            var el = ev.target.closest && ev.target.closest('[data-anami-evento]');
+            if (!el) return;
+            rastrear(el.getAttribute('data-anami-evento'), {
+                rotulo: el.getAttribute('data-anami-rotulo') || textoLimpo(el).slice(0, 60),
+                pagina: location.pathname
+            });
+        }, true);
     }
 
-    /* ---------- 1. cabeçalho com vidro ---------- */
+    /* ---------- 1. cabeçalho: botão "Enviar receita" ---------- */
+
+    function botaoReceita(classe, origem, rotulo) {
+        var a = criar('<a class="' + classe + '" href="' + zap(MENSAGEM_RECEITA) + '" target="_blank" rel="noopener noreferrer" ' +
+            'data-anami-prescricao data-anami-origem="' + origem + '" aria-label="Enviar receita pelo WhatsApp">' +
+            ICONE_WHATSAPP + '<span>' + rotulo + '</span></a>');
+        return a;
+    }
 
     function iniciarCabecalho() {
-        var LIMITE = 40;
-        var pendente = false;
+        var cab = document.getElementById('cabecalho');
+        if (!cab) return;
 
-        function atualizar() {
-            pendente = false;
-            var cab = document.getElementById('cabecalho');
-            if (!cab) return;
-            var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-            cab.classList.toggle('anami-cabecalho-rolado', y > LIMITE);
+        var icones = cab.querySelector('.col-icons');
+        if (icones && !icones.querySelector('.anami-header-cta')) {
+            var carrinho = icones.querySelector('.carrinho');
+            var cta = botaoReceita('anami-header-cta', 'header', 'Enviar receita');
+            if (carrinho) icones.insertBefore(cta, carrinho); else icones.appendChild(cta);
         }
 
-        window.addEventListener('scroll', function () {
-            if (pendente) return;
-            pendente = true;
-            (window.requestAnimationFrame || function (f) { setTimeout(f, 16); })(atualizar);
-        }, { passive: true });
-
-        atualizar();
+        var mobile = cab.querySelector('.col-mobile-menu');
+        if (mobile && !mobile.querySelector('.anami-header-cta')) {
+            var carrinhoMobile = mobile.querySelector('.carrinho');
+            var ctaMobile = botaoReceita('anami-header-cta', 'header-mobile', 'Enviar receita');
+            if (carrinhoMobile) mobile.insertBefore(ctaMobile, carrinhoMobile); else mobile.appendChild(ctaMobile);
+        }
     }
 
-    /* ---------- 2. preço da PDP ---------- */
+    /* ---------- 2. menu: item "Envie sua receita" ---------- */
+
+    function iniciarMenu() {
+        var desktop = document.querySelector('.main-menu-desktop .nivel-um');
+        if (desktop && !desktop.querySelector('.anami-menu-receita')) {
+            var li = criar('<li class="offer anami-menu-receita"></li>');
+            var a = botaoReceita('', 'menu', 'Envie sua receita');
+            a.innerHTML = ICONE_WHATSAPP + '<strong>Envie sua receita</strong>';
+            li.appendChild(a);
+            var todos = desktop.querySelector('li.all-categories');
+            if (todos && todos.nextSibling) desktop.insertBefore(li, todos.nextSibling);
+            else desktop.insertBefore(li, desktop.firstChild);
+        }
+
+        var mobileMenu = document.querySelector('.main-menu-mobile .primary-menu');
+        if (mobileMenu && !mobileMenu.querySelector('.anami-menu-receita')) {
+            var liM = criar('<li class="anami-menu-receita"></li>');
+            liM.appendChild(botaoReceita('', 'menu-mobile', 'Envie sua receita pelo WhatsApp'));
+            mobileMenu.insertBefore(liM, mobileMenu.firstChild);
+        }
+    }
+
+    /* ---------- 3. botão flutuante do tema: só marca a origem ---------- */
+
+    function iniciarFlutuante() {
+        var botao = document.querySelector('.whatsapp-float-button, a[class*="whatsapp-float"]');
+        if (botao && !botao.hasAttribute('data-anami-origem')) {
+            botao.setAttribute('data-anami-origem', 'flutuante');
+        }
+    }
+
+    /* ---------- 4. preço da PDP ---------- */
 
     function paraNumero(texto) {
         if (!texto) return NaN;
@@ -153,10 +236,7 @@
             });
     }
 
-    /* ---------- 3. CTA de prescrição na PDP ---------- */
-
-    var ICONE_WHATSAPP =
-        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 0 0 5.4 1.3h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.3-6.1-3.5-8.3Zm-8.4 18.1h-.1a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.7 9.7 0 0 1-1.5-5.2C2.1 6.4 6.5 2 12.1 2c2.7 0 5.1 1 7 2.9s2.9 4.3 2.9 7c0 5.4-4.5 9.7-9.9 9.7Zm5.4-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-1.5-.7-2.5-1.3-3.5-2.9-.3-.5.3-.5.8-1.7.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.7s1.2 3.1 1.4 3.3c.2.2 2.4 3.7 5.8 5.1.8.3 1.4.5 1.8.6.8.3 1.5.2 2.1.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4 0-.1-.2-.2-.5-.3Z"/></svg>';
+    /* ---------- 5. CTA de prescrição na PDP ---------- */
 
     function garantirCtaPrescricao() {
         var botao = document.querySelector('a.botao.botao-comprar.principal.grande.botao-comprar-ajax');
@@ -173,7 +253,7 @@
 
         var link = document.createElement('a');
         link.className = 'anami-whatsapp-produto';
-        link.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(mensagem);
+        link.href = zap(mensagem);
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.setAttribute('aria-label', 'Enviar prescrição pelo WhatsApp');
@@ -186,7 +266,6 @@
         botao.parentNode.insertBefore(link, botao.nextSibling);
     }
 
-    /* Um observer só, restrito à área de compra da PDP. */
     function iniciarProduto() {
         if (!emPaginaDeProduto()) return;
 
@@ -203,7 +282,7 @@
         );
     }
 
-    /* ---------- 4. dados legais no rodapé ---------- */
+    /* ---------- 6. dados legais no rodapé ---------- */
 
     function moverDadosLegais() {
         var bloco = document.getElementById('anami-dados-legais');
@@ -227,7 +306,6 @@
 
     function iniciarDadosLegais() {
         if (moverDadosLegais()) return;
-        /* Nova tentativa; se o alvo não existir, mostra onde estiver. */
         setTimeout(function () {
             if (!moverDadosLegais()) {
                 var bloco = document.getElementById('anami-dados-legais');
@@ -236,14 +314,187 @@
         }, 1200);
     }
 
+    /* ---------- 7. seções da home ---------- */
+
+    var ICONES = {
+        escudo: '<svg class="anami-i" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="m9 12 2 2 4-4"/></svg>',
+        capsula: '<svg class="anami-ilustra" viewBox="0 0 64 64"><rect x="10" y="24" width="44" height="18" rx="9" transform="rotate(-35 32 33)"/><path d="M26 22l12 17"/><circle cx="48" cy="48" r="3"/><circle cx="14" cy="50" r="2"/></svg>',
+        vitamina: '<svg class="anami-ilustra" viewBox="0 0 64 64"><path d="M20 10h24v8H20z"/><path d="M22 18h20l2 34H20z"/><path d="M26 30h12M26 38h12"/></svg>',
+        treino: '<svg class="anami-ilustra" viewBox="0 0 64 64"><path d="M8 26h8v12H8zM48 26h8v12h-8zM16 29h32v6H16z"/><path d="M4 30h4v4H4zM56 30h4v4h-4z"/></svg>',
+        beleza: '<svg class="anami-ilustra" viewBox="0 0 64 64"><rect x="22" y="22" width="20" height="32" rx="6"/><path d="M27 22v-8h10v8"/><path d="M30 10h4"/></svg>',
+        gota: '<svg class="anami-ilustra" viewBox="0 0 64 64"><path d="M32 10c-8 12-12 18-12 25a12 12 0 0 0 24 0c0-7-4-13-12-25z"/><path d="M27 37a5 5 0 0 0 5 5"/></svg>',
+        receita: '<svg class="anami-ilustra" viewBox="0 0 64 64"><path d="M16 8h24l8 8v40H16z"/><path d="M40 8v8h8"/><path d="M24 30h16M24 38h16M24 46h10"/></svg>',
+        coracao: '<svg class="anami-marca" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 88 C20 66 8 52 8 34 A18 18 0 0 1 50 24 A18 18 0 0 1 92 34 C92 52 80 66 50 88 Z"/></svg>'
+    };
+
+    function botaoHtml(classe, origem, texto, href, prescricao) {
+        return '<a class="anami-botao ' + classe + '" href="' + (href || zap(MENSAGEM_RECEITA)) + '"' +
+            (href ? '' : ' target="_blank" rel="noopener noreferrer"') +
+            (prescricao ? ' data-anami-prescricao' : '') +
+            ' data-anami-origem="' + origem + '">' + (prescricao ? ICONE_WHATSAPP : '') + texto + '</a>';
+    }
+
+    var SECOES = {
+        credenciais: function () {
+            return '<section class="anami-secao anami-credenciais" data-anami-secao="credenciais" aria-label="Credenciais da Anami">' +
+                '<ul>' +
+                '<li><strong>+10 anos</strong>de experiência da farmacêutica-chefe</li>' +
+                '<li><strong>Ativos com laudo</strong>identidade, teor e procedência conferidos</li>' +
+                '<li><strong>AFE e AE Anvisa</strong>autorizações de funcionamento em dia</li>' +
+                '<li><strong>Todo o Brasil</strong>entrega nacional a partir de São Caetano do Sul</li>' +
+                '</ul></section>';
+        },
+        como: function () {
+            return '<section class="anami-secao anami-como" data-anami-secao="como-funciona" id="anami-receita">' +
+                '<div>' +
+                '<span class="anami-eyebrow">Envie sua receita</span>' +
+                '<h2>Sua receita, manipulada por quem acompanha cada fórmula.</h2>' +
+                '<p class="anami-lead">Mande a foto da prescrição pelo WhatsApp. Nossa farmacêutica responsável revisa a fórmula, envia o orçamento e você recebe em casa.</p>' +
+                '<div class="anami-botoes">' +
+                botaoHtml('', 'home-como-funciona', 'Enviar receita pelo WhatsApp', null, true) +
+                botaoHtml('anami-botao--secundario', 'home-ver-produtos', 'Ver suplementos', '/vitaminas-e-suplementos') +
+                '</div>' +
+                '<p class="anami-nota">' + ICONES.escudo + 'Orçamento sem compromisso, de segunda a sábado</p>' +
+                '</div>' +
+                '<aside class="anami-rx" aria-label="Como funciona o envio de receita">' +
+                '<div class="anami-rx-topo"><strong>Rx</strong><span>Como funciona<br>o envio de receita</span></div>' +
+                '<ol class="anami-passos">' +
+                '<li><span class="anami-n">1</span><div><h3>Foto da prescrição</h3><p>Pode ser receita de médico, dentista ou nutricionista.</p></div></li>' +
+                '<li><span class="anami-n">2</span><div><h3>Revisão farmacêutica</h3><p>Conferimos dose, forma e compatibilidade dos ativos antes do orçamento.</p></div></li>' +
+                '<li><span class="anami-n">3</span><div><h3>Manipulação e entrega</h3><p>Fórmula pronta em casa, com retirada em São Caetano do Sul se preferir.</p></div></li>' +
+                '</ol>' +
+                '<div class="anami-assinatura"><span>Farmacêutica responsável<br>CRF-SP 76104</span><em>Camilla</em></div>' +
+                '</aside></section>';
+        },
+        bento: function () {
+            function forma(classe, href, icone, titulo, texto, extra, evento) {
+                return '<a class="anami-forma ' + classe + '" href="' + href + '" data-anami-evento="clique_categoria_home" data-anami-rotulo="' + titulo + '"' + (evento || '') + '>' +
+                    icone + '<div><h3>' + titulo + '</h3><p>' + texto + '</p>' + (extra || '') + '</div></a>';
+            }
+            return '<section class="anami-secao anami-formas" data-anami-secao="o-que-manipulamos">' +
+                '<div class="anami-cabeca"><div><span class="anami-eyebrow">O que manipulamos</span><h2>Fórmulas na forma certa para a sua rotina.</h2></div></div>' +
+                '<div class="anami-bento">' +
+                '<a class="anami-forma anami-forma--principal" href="' + zap(MENSAGEM_RECEITA) + '" target="_blank" rel="noopener noreferrer" data-anami-prescricao data-anami-origem="home-bento">' +
+                ICONES.receita + '<div><h3>Manipulados com receita</h3><p>Cápsulas, gotas, cremes e sachês na dose exata da sua prescrição. Envie a foto e receba o orçamento.</p>' +
+                '<span class="anami-botao anami-botao--menta">Enviar receita</span></div></a>' +
+                forma('', '/vitaminas-e-suplementos', ICONES.vitamina, 'Vitaminas e suplementos', 'Vitaminas, minerais e ômega 3 prontos para comprar.') +
+                forma('', '/performance', ICONES.treino, 'Performance', 'Creatina, aminoácidos e pré-treino.') +
+                forma('', '/beleza', ICONES.beleza, 'Beleza', 'Colágeno, pele, cabelos e unhas.') +
+                forma('', '/sublinguais', ICONES.gota, 'Sublinguais', 'Absorção rápida, em gotas.') +
+                '</div></section>';
+        },
+        laudo: function () {
+            return '<section class="anami-secao" data-anami-secao="laudo" id="anami-laudo">' +
+                '<div class="anami-laudo">' +
+                '<div><span class="anami-eyebrow">Qualidade</span><h2>Cada ativo chega com laudo. E a gente confere.</h2>' +
+                '<p class="anami-lead">Trabalhamos com ativos patenteados e fornecedores qualificados. Antes de entrar em qualquer fórmula, a matéria-prima passa por estas verificações.</p>' +
+                botaoHtml('anami-botao--menta', 'home-laudo', 'Perguntar sobre um laudo', zap('Olá! Quero saber sobre o laudo de um ativo.')) +
+                '</div>' +
+                '<div class="anami-criterios">' +
+                '<details open><summary>Identidade</summary><p>Confirmamos que o ativo é exatamente o que o fornecedor declarou, comparando o laudo com as especificações.</p></details>' +
+                '<details><summary>Teor e pureza</summary><p>O laudo de análise informa a concentração e a ausência de contaminantes dentro dos limites da farmacopeia.</p></details>' +
+                '<details><summary>Procedência</summary><p>Rastreamos lote, fabricante e validade de cada matéria-prima usada na sua fórmula.</p></details>' +
+                '<details><summary>Ativos patenteados</summary><p>Quando a prescrição pede um ativo de marca, usamos o original com certificado do detentor da patente.</p></details>' +
+                '</div></div></section>';
+        },
+        farmaceutica: function () {
+            return '<section class="anami-secao anami-farm" data-anami-secao="farmaceutica" id="anami-farmaceutica">' +
+                '<figure><img class="anami-retrato" src="' + FOTO_CAMILLA + '" alt="Camilla, farmacêutica responsável da Anami, na bancada de manipulação" loading="lazy" width="510" height="510">' +
+                '<figcaption>Camilla na bancada de manipulação da Anami, em São Caetano do Sul.</figcaption></figure>' +
+                '<div><span class="anami-eyebrow">Farmacêutica responsável</span>' +
+                '<p class="anami-citacao">“Gente entende de gente. Antes de manipular, eu quero entender quem vai tomar a fórmula. Por isso respondo pessoalmente as dúvidas sobre cada receita.”</p>' +
+                '<p class="anami-quem"><strong>Camilla C. de Oliveira</strong>Farmacêutica responsável, CRF-SP 76104, há mais de 10 anos na manipulação</p>' +
+                '<div class="anami-botoes">' + botaoHtml('anami-botao--secundario', 'home-farmaceutica', 'Tirar uma dúvida com a farmacêutica', zap('Olá! Quero tirar uma dúvida com a farmacêutica.')) + '</div>' +
+                '</div></section>';
+        },
+        depoimentos: function () {
+            function dep(texto, nome) {
+                return '<blockquote class="anami-depoimento"><div class="anami-estrelas" aria-label="5 de 5 estrelas">★★★★★</div><p>' + texto + '</p><footer><strong>' + nome + '</strong> · avaliação no Google</footer></blockquote>';
+            }
+            return '<section class="anami-secao" data-anami-secao="depoimentos">' +
+                '<div class="anami-cabeca"><div><span class="anami-eyebrow">Quem já manipulou com a gente</span><h2>O que os clientes contam.</h2></div>' +
+                '<a class="anami-link" href="https://www.google.com/search?q=Anami+F%C3%B3rmulas+S%C3%A3o+Caetano+do+Sul" target="_blank" rel="noopener noreferrer" data-anami-evento="clique_avaliacoes_google">Ver avaliações no Google</a></div>' +
+                '<div class="anami-depoimentos">' +
+                dep('Excelente farmácia de manipulação. Matéria-prima de qualidade com rastreabilidade e, se necessário, enviam laudos das matérias-primas utilizadas na manipulação. Entrega rápida para São Paulo capital e com preço acessível.', 'Ellen L.') +
+                dep('Eu recomendo a Anami Fórmulas. Fiz o pedido via WhatsApp e, em menos de 24 horas após a confirmação do pagamento, recebi em casa os meus manipulados!', 'Márcio F.') +
+                dep('Atendimento excelente! Fui muito bem atendida, a entrega foi super rápida e as embalagens são lindas e muito caprichadas. Ainda ganhamos um brinde. Recomendo muito!', 'Luana R.') +
+                '</div></section>';
+        },
+        faq: function () {
+            return '<section class="anami-secao anami-faq" data-anami-secao="faq">' +
+                '<div><span class="anami-eyebrow">Dúvidas</span><h2>Perguntas sobre manipulação</h2><p class="anami-lead">Não achou a sua? A farmacêutica responde pelo WhatsApp.</p></div>' +
+                '<div>' +
+                '<details><summary>Preciso de receita para manipular?</summary><p>Para medicamentos, sim. Suplementos como vitaminas, minerais e aminoácidos podem ser comprados sem receita, direto na loja.</p></details>' +
+                '<details><summary>Quanto tempo leva para a fórmula ficar pronta?</summary><p>Informamos o prazo de manipulação junto com o orçamento. O prazo de entrega depende do seu CEP e aparece no carrinho.</p></details>' +
+                '<details><summary>Vocês entregam fora de São Paulo?</summary><p>Sim, entregamos em todo o Brasil. Em São Caetano do Sul também é possível retirar na farmácia.</p></details>' +
+                '<details><summary>Posso tirar dúvidas sobre a minha prescrição?</summary><p>Pode. A farmacêutica responsável explica como tomar e armazenar a fórmula. Mudanças de dose são sempre com quem prescreveu.</p></details>' +
+                '</div></section>';
+        },
+        cta: function () {
+            return '<section class="anami-secao" data-anami-secao="cta-final">' +
+                '<div class="anami-cta-final">' + ICONES.coracao +
+                '<div><h2>Tem uma receita em mãos?</h2><p>Mande a foto agora e receba o orçamento da sua fórmula pelo WhatsApp.</p></div>' +
+                botaoHtml('', 'home-cta-final', 'Enviar receita pelo WhatsApp', null, true) +
+                '</div></section>';
+        }
+    };
+
+    var FOTO_CAMILLA = 'https://cdn.jsdelivr.net/gh/Mattt2049/anami-tema@v' + VERSAO + '/img/camilla.webp';
+
+    function preencherSlot(slot, html, fallbackEl, posicao) {
+        if (slot) {
+            if (slot.hasAttribute('data-anami-preenchido')) return;
+            slot.setAttribute('data-anami-preenchido', '1');
+            slot.insertAdjacentHTML('beforeend', html);
+            return;
+        }
+        if (fallbackEl) fallbackEl.insertAdjacentHTML(posicao || 'afterend', html);
+    }
+
+    function iniciarHome() {
+        if (!document.body.classList.contains('pagina-inicial')) return;
+        if (document.querySelector('.anami-secao')) return;
+
+        var slots3 = document.querySelectorAll('[id="blank-home-position3"]');
+        var slotA = slots3[0] || null;
+        var slotB = document.querySelector('#listagemProdutos [id="blank-home-position3"]') || slots3[1] || null;
+        var slot4 = document.querySelector('[id="blank-home-position4"]');
+
+        preencherSlot(slotA, SECOES.credenciais() + SECOES.como(), document.querySelector('.banner.mini-banner'), 'afterend');
+        preencherSlot(slotB, SECOES.bento(), document.getElementById('listagemProdutos'), 'beforeend');
+        preencherSlot(slot4,
+            SECOES.laudo() + SECOES.farmaceutica() + SECOES.depoimentos() + SECOES.faq() + SECOES.cta(),
+            document.querySelector('.secao-secundaria') || document.getElementById('corpo'), 'beforeend');
+
+        if (!('IntersectionObserver' in window)) return;
+        var vistas = {};
+        var io = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (e) {
+                if (!e.isIntersecting) return;
+                var nome = e.target.getAttribute('data-anami-secao');
+                if (vistas[nome]) return;
+                vistas[nome] = true;
+                io.unobserve(e.target);
+                rastrear('view_section', { secao: nome, pagina: location.pathname });
+            });
+        }, { threshold: .4 });
+        document.querySelectorAll('.anami-secao[data-anami-secao]').forEach(function (s) { io.observe(s); });
+    }
+
     /* ---------- inicialização ---------- */
 
     function iniciar() {
-        var modulos = [iniciarCabecalho, iniciarProduto, iniciarDadosLegais, iniciarTrackingWhatsApp];
-        modulos.forEach(function (m) {
-            try { m(); } catch (e) {
-                if (window.console) console.warn('[anami] falha em ' + m.name, e);
-            }
+        [iniciarTrackingWhatsApp, iniciarProduto, iniciarDadosLegais].forEach(function (m) {
+            try { m(); } catch (e) { if (window.console) console.warn('[anami] falha em ' + m.name, e); }
+        });
+
+        quandoTemaPronto(function () {
+            [iniciarCabecalho, iniciarMenu, iniciarFlutuante, iniciarHome].forEach(function (m) {
+                try { m(); } catch (e) { if (window.console) console.warn('[anami] falha em ' + m.name, e); }
+            });
+            aoMudarEstado(function () {
+                try { iniciarCabecalho(); iniciarMenu(); } catch (e) { /* idempotente */ }
+            });
         });
     }
 

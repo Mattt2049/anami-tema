@@ -1,5 +1,28 @@
 <!-- ANAMI · cabeçalho (Loja Integrada > Códigos HTML > Cabeçalho)
-     Troque a tag de versão a cada release. -->
+     Troque a tag de versão a cada release (3 lugares: CSS, JS). -->
+<script>document.documentElement.className+=' anami-js';
+window.NSThemeData = {
+  general: { businessHour: 'Seg a sex, 8h às 19h<br>Sábado, 8h às 13h' },
+  bannerTopBar: { enabled: true, type: 'text', text: '<span class="anami-topo-desk"><strong>Farmácia de manipulação em São Caetano do Sul</strong> &nbsp;·&nbsp; </span>Entrega para todo o Brasil &nbsp;·&nbsp; <a href="https://wa.me/5511950358443?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20tirar%20uma%20d%C3%BAvida." data-anami-origem="barra-topo">WhatsApp (11) 95035-8443</a>' },
+  header: { actionsMenu: { help: { label: 'Fale com<br>a gente' } } },
+  productItem: { imageSize: 'square', discountText: '{desconto}% OFF', imageQuality: '400x400' },
+  renameTitles: {
+    releases: { title: 'Chegou na Anami', subtitle: null },
+    bestSeller: { title: 'Mais vendidos', subtitle: 'o que nossos clientes mais pedem' },
+    featured: { title: 'Fórmulas em destaque', subtitle: 'selecionadas pela farmacêutica' },
+    moreProducts: { title: 'Você também pode gostar' }
+  },
+  whatsapp: {
+    floatButton: { enabled: true, animated: false, message: 'Olá! Vim pelo site e quero tirar uma dúvida.' },
+    buyButton: { enabled: false }
+  },
+  footer: { pagesTitle: 'Institucional', categoriesTitle: 'Categorias', socialTitle: 'Redes sociais', contactTitle: 'Fale com a gente', aboutTitle: 'Sobre a Anami' }
+};
+document.addEventListener('ns:onafterload', function () { window.anamiTemaPronto = true; });</script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/gh/Mattt2049/anami-tema@v1.1.0/anami-tokens.min.css,gh/Mattt2049/anami-tema@v1.1.0/anami-tema.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/gh/Mattt2049/anami-tema@v1.2.0/anami-tokens.min.css,gh/Mattt2049/anami-tema@v1.2.0/anami-tema.min.css,gh/Mattt2049/anami-tema@v1.2.0/anami-home.min.css">
+<script src="https://cdn.jsdelivr.net/gh/Mattt2049/anami-tema@v1.2.0/anami-core.min.js" defer></script>
 <meta name="google-site-verification" content="PTnHTja8GBRbL4b9qFwDgoH99zobIalM4DH23Xbn_J8" />

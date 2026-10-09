@@ -6,11 +6,15 @@ Tema da loja Anami Fórmulas na Loja Integrada (anamiformulas.com.br), servido v
 
 | Arquivo | Função |
 |---|---|
-| `anami-tokens.css` | Cores, raios e transições em variáveis. Base que vai junto na migração. |
-| `anami-tema.css` | Componentes: header, minicarrinho, catálogo, PDP, descrição, rodapé. |
-| `anami-core.js` | Header com vidro, preço da PDP, CTA de prescrição, dados legais, tracking de WhatsApp. |
-| `painel/cabecalho.html` | O que vai no campo **Cabeçalho** do painel. |
-| `painel/rodape.html` | O que vai no campo **Rodapé** do painel (dados legais e schema ficam inline). |
+| `anami-tokens.css` | Cores, fonte, raios e transições em variáveis. Base que vai junto na migração. |
+| `anami-tema.css` | Visual global por cima do tema NVitrine: variáveis `--ns-*`, cabeçalho, menu, banners, cards de produto, PDP, rodapé. |
+| `anami-home.css` | Seções da página inicial injetadas pelo core.js (credenciais, como funciona, o que manipulamos, laudo, farmacêutica, depoimentos, FAQ, CTA). |
+| `anami-core.js` | Tracking de WhatsApp, botão "Enviar receita" no cabeçalho e no menu, seções da home, preço e CTA da PDP, dados legais. |
+| `cabecalho.html` | O que vai no campo **Cabeçalho** do painel: configuração do tema NVitrine (`window.NSThemeData`), fonte, CSS e JS. |
+| `rodape.html` | O que vai no campo **Rodapé** do painel (dados legais e schema ficam inline). |
+| `img/` | Imagens servidas pelo jsDelivr (foto da farmacêutica). |
+
+A loja usa o tema comprado **NVitrine (nsdigital)**, que monta cabeçalho, menu e rodapé por JavaScript e expõe variáveis `--ns-*` e o objeto `window.NSThemeData`. O core.js espera o evento `ns:onafterload` antes de mexer nessas áreas. Não trocar de tema: a loja de temas da Loja Integrada e o "novo tema padrão" bloqueiam CSS/HTML/JS.
 
 ## Fluxo de release
 

@@ -9,3 +9,8 @@ emails.html
 *.jpg
 *.webp
 PUBLICAR-BANNERS/
+DOMINIOS.md
+!img/
+!img/camilla.webp
+PUBLICAR-v1.2.0.md
+LAYOUT-E-OPCOES.md

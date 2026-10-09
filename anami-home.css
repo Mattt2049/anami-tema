@@ -1,0 +1,310 @@
+/* ============================================================
+   ANAMI FÓRMULAS — HOME (seções injetadas pelo core.js)
+   Depende de anami-tokens.css. Tudo com prefixo anami-.
+   As seções entram nos espaços vazios que a plataforma já deixa na home.
+   ============================================================ */
+
+/* ---------- base das seções ---------- */
+
+.anami-secao {
+    position: relative;
+    clear: both;
+    box-sizing: border-box;
+    font-family: var(--anami-fonte);
+    color: var(--anami-texto);
+    line-height: 1.5;
+    padding: 56px 0;
+}
+
+.anami-secao *, .anami-secao *::before, .anami-secao *::after { box-sizing: border-box; }
+
+.anami-secao :is(h2, h3, p, ul, ol, details, summary, blockquote, figure) { margin: 0; padding: 0; }
+.anami-secao :is(ul, ol) { list-style: none; }
+.anami-secao a { text-decoration: none; }
+.anami-secao img { display: block; max-width: 100%; height: auto; }
+
+.anami-secao h2 {
+    font-family: var(--anami-fonte);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.015em;
+    color: var(--anami-texto);
+    text-wrap: balance;
+}
+
+.anami-secao h3 { font-family: var(--anami-fonte); font-size: 19px; font-weight: 600; line-height: 1.25; color: var(--anami-texto); }
+.anami-secao p { font-size: 16px; line-height: 1.55; color: var(--anami-texto-suave); }
+.anami-lead { font-size: 18px !important; }
+
+.anami-eyebrow {
+    display: inline-block;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--anami-roxo);
+}
+
+/* Fundo sangrado além do contêiner de 1180px, sem rolagem lateral. */
+.anami-secao--sangrada {
+    box-shadow: 0 0 0 100vmax var(--anami-fundo-secao, var(--anami-papel));
+    clip-path: inset(0 -100vmax);
+    background: var(--anami-fundo-secao, var(--anami-papel));
+}
+
+.anami-cabeca {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.anami-cabeca p { max-width: 560px; margin-top: 10px; }
+.anami-link { font-weight: 600; color: var(--anami-roxo) !important; white-space: nowrap; }
+.anami-link:hover { text-decoration: underline; }
+
+.anami-i { width: 22px; height: 22px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+
+/* ---------- 1. credenciais ---------- */
+
+.anami-credenciais { padding: 8px 0 0; }
+
+.anami-credenciais ul {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    padding: 22px 26px;
+    background: var(--anami-lavanda);
+    border-radius: var(--anami-raio-bloco);
+}
+
+.anami-credenciais li {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 4px 18px 4px 0;
+    border-right: 1px solid rgba(95, 24, 239, .14);
+    font-size: 14px;
+    color: var(--anami-texto-suave);
+}
+
+.anami-credenciais li:last-child { border-right: 0; }
+.anami-credenciais strong { font-size: 20px; font-weight: 700; letter-spacing: -.01em; color: var(--anami-roxo-noite); }
+
+
+/* ---------- 2. como funciona ---------- */
+
+.anami-como { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.anami-como h2 { max-width: 520px; }
+.anami-como .anami-lead { margin-top: 16px; max-width: 520px; }
+.anami-como .anami-botoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.anami-nota { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 14px; color: var(--anami-texto-suave); }
+.anami-nota .anami-i { width: 18px; height: 18px; color: var(--anami-menta-escura); }
+
+.anami-rx {
+    position: relative;
+    padding: 28px 28px 24px;
+    background: var(--anami-branco);
+    border: 1px solid var(--anami-linha);
+    border-radius: var(--anami-raio-bloco);
+    box-shadow: var(--anami-sombra-card);
+    transform: rotate(-1.2deg);
+}
+
+.anami-rx-topo { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.anami-rx-topo strong { font-size: 30px; font-weight: 700; color: var(--anami-roxo); letter-spacing: -.02em; }
+.anami-rx-topo span { font-size: 14px; line-height: 1.3; color: var(--anami-texto-suave); }
+
+.anami-passos { display: grid; gap: 14px; }
+.anami-passos li { display: grid; grid-template-columns: 36px 1fr; gap: 14px; align-items: start; }
+.anami-passos .anami-n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--anami-menta); color: var(--anami-roxo-noite);
+    font-weight: 700; font-size: 15px;
+}
+.anami-passos h3 { font-size: 16px; }
+.anami-passos p { font-size: 14px; margin-top: 2px; }
+
+.anami-assinatura {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
+    margin-top: 22px; padding-top: 16px; border-top: 1px dashed var(--anami-linha);
+    font-size: 12.5px; line-height: 1.35; color: var(--anami-texto-suave);
+}
+.anami-assinatura em { font-style: italic; font-size: 24px; color: var(--anami-roxo); }
+
+
+/* ---------- 3. o que manipulamos (bento) ---------- */
+
+.anami-bento { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-auto-rows: minmax(150px, auto); gap: 14px; }
+
+.anami-forma {
+    display: flex; flex-direction: column; justify-content: space-between; gap: 18px;
+    padding: 22px;
+    background: var(--anami-branco);
+    border: 1px solid var(--anami-linha);
+    border-radius: var(--anami-raio-card);
+    color: var(--anami-texto);
+    transition: transform var(--anami-transicao), box-shadow var(--anami-transicao), border-color var(--anami-transicao);
+}
+
+.anami-forma:hover { transform: translateY(-3px); box-shadow: var(--anami-sombra-card); border-color: transparent; }
+.anami-forma h3 { font-size: 20px; }
+.anami-forma p { font-size: 14px; margin-top: 4px; }
+.anami-forma .anami-ilustra { width: 46px; height: 46px; stroke: var(--anami-roxo); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.anami-forma--principal { grid-row: span 2; background: var(--anami-menta); border-color: var(--anami-menta); }
+.anami-forma--principal h3 { font-size: 26px; }
+.anami-forma--principal p { font-size: 15px; color: var(--anami-menta-escura); }
+.anami-forma--principal .anami-ilustra { width: 60px; height: 60px; stroke: var(--anami-roxo-noite); }
+.anami-forma--principal .anami-botao { align-self: flex-start; margin-top: 10px; }
+
+
+/* ---------- 4. laudo ---------- */
+
+.anami-laudo {
+    display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: start;
+    padding: 44px;
+    background: var(--anami-roxo-noite);
+    border-radius: var(--anami-raio-bloco);
+    color: var(--anami-branco);
+}
+
+.anami-laudo h2, .anami-laudo h3 { color: var(--anami-branco); }
+.anami-laudo .anami-eyebrow { color: var(--anami-menta); }
+.anami-laudo .anami-lead { margin-top: 14px; color: var(--anami-lavanda-texto); }
+.anami-laudo .anami-botao { margin-top: 24px; }
+
+.anami-criterios details { border-top: 1px solid rgba(255, 255, 255, .14); }
+.anami-criterios details:last-child { border-bottom: 1px solid rgba(255, 255, 255, .14); }
+.anami-criterios summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 16px 0; cursor: pointer; list-style: none;
+    font-size: 18px; font-weight: 600; color: var(--anami-branco);
+}
+.anami-criterios summary::-webkit-details-marker { display: none; }
+.anami-criterios summary::after {
+    content: "+"; flex: none; width: 28px; height: 28px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(255, 255, 255, .12); font-size: 20px; line-height: 1; transition: transform var(--anami-transicao);
+}
+.anami-criterios details[open] summary::after { content: "–"; }
+.anami-criterios details p { padding: 0 44px 18px 0; color: var(--anami-lavanda-texto); font-size: 15px; }
+
+
+/* ---------- 5. farmacêutica ---------- */
+
+.anami-farm { display: grid; grid-template-columns: .9fr 1.1fr; gap: 48px; align-items: center; }
+.anami-farm figure { margin: 0; }
+.anami-farm .anami-retrato {
+    width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%;
+    border-radius: var(--anami-raio-bloco);
+    box-shadow: var(--anami-sombra-card);
+}
+.anami-farm figcaption { margin-top: 10px; font-size: 12.5px; color: var(--anami-texto-suave); }
+.anami-citacao {
+    font-size: 26px; font-weight: 500; line-height: 1.3; letter-spacing: -.01em;
+    color: var(--anami-texto); text-wrap: balance;
+}
+.anami-quem { display: flex; flex-direction: column; gap: 2px; margin-top: 18px; font-size: 14px; }
+.anami-quem strong { font-size: 16px; color: var(--anami-texto); }
+.anami-farm .anami-botoes { margin-top: 24px; }
+
+
+/* ---------- 6. depoimentos ---------- */
+
+.anami-depoimentos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.anami-depoimento {
+    display: flex; flex-direction: column; gap: 12px;
+    padding: 24px; margin: 0;
+    background: var(--anami-branco);
+    border: 1px solid var(--anami-linha);
+    border-radius: var(--anami-raio-card);
+}
+.anami-estrelas { color: #F2B01E; letter-spacing: 2px; font-size: 15px; }
+.anami-depoimento p { font-size: 15.5px; color: var(--anami-texto); flex: 1; }
+.anami-depoimento footer { font-size: 13px; color: var(--anami-texto-suave); }
+.anami-depoimento footer strong { color: var(--anami-texto); }
+
+
+/* ---------- 7. perguntas frequentes ---------- */
+
+.anami-faq { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: start; }
+.anami-faq .anami-lead { margin-top: 14px; }
+.anami-faq details { border-top: 1px solid var(--anami-linha); }
+.anami-faq details:last-child { border-bottom: 1px solid var(--anami-linha); }
+.anami-faq summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 16px 0; cursor: pointer; list-style: none;
+    font-size: 17px; font-weight: 600; color: var(--anami-texto);
+}
+.anami-faq summary::-webkit-details-marker { display: none; }
+.anami-faq summary::after {
+    content: "+"; flex: none; width: 28px; height: 28px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--anami-lavanda); color: var(--anami-roxo); font-size: 20px; line-height: 1;
+}
+.anami-faq details[open] summary::after { content: "–"; }
+.anami-faq details p { padding: 0 44px 18px 0; font-size: 15px; }
+
+
+/* ---------- 8. chamada final ---------- */
+
+.anami-cta-final {
+    position: relative; overflow: hidden;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+    padding: 40px 44px;
+    background: var(--anami-menta);
+    border-radius: var(--anami-raio-bloco);
+}
+.anami-cta-final h2 { font-size: 30px; color: var(--anami-roxo-noite); }
+.anami-cta-final p { margin-top: 8px; color: var(--anami-menta-escura); font-size: 17px; }
+.anami-cta-final .anami-marca {
+    position: absolute; right: -40px; bottom: -70px; width: 260px; height: 260px;
+    opacity: .14; fill: var(--anami-roxo); pointer-events: none;
+}
+
+
+/* ---------- foco e movimento ---------- */
+
+.anami-secao summary:focus-visible, .anami-forma:focus-visible { outline: 3px solid var(--anami-foco-roxo); outline-offset: 3px; border-radius: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .anami-forma, .anami-criterios summary::after { transition: none; }
+    .anami-rx { transform: none; }
+}
+
+
+/* ---------- responsivo ---------- */
+
+@media screen and (max-width: 979px) {
+    .anami-secao { padding: 44px 0; }
+    .anami-secao h2 { font-size: 30px; }
+    .anami-credenciais ul { grid-template-columns: repeat(2, 1fr); gap: 18px 12px; padding: 20px; }
+    .anami-credenciais li:nth-child(2n) { border-right: 0; }
+    .anami-como, .anami-laudo, .anami-farm, .anami-faq { grid-template-columns: 1fr; gap: 28px; }
+    .anami-rx { transform: none; }
+    .anami-bento { grid-template-columns: 1fr 1fr; }
+    .anami-forma--principal { grid-column: span 2; grid-row: auto; }
+    .anami-depoimentos { grid-template-columns: 1fr; }
+    .anami-laudo { padding: 30px 24px; }
+    .anami-cta-final { grid-template-columns: 1fr; padding: 30px 24px; }
+}
+
+@media screen and (max-width: 560px) {
+    .anami-secao { padding: 36px 0; }
+    .anami-secao h2 { font-size: 26px; }
+    .anami-cabeca { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .anami-credenciais ul { grid-template-columns: 1fr; }
+    .anami-credenciais li { border-right: 0; border-bottom: 1px solid rgba(95, 24, 239, .14); padding: 10px 0; }
+    .anami-credenciais li:last-child { border-bottom: 0; }
+    .anami-bento { grid-template-columns: 1fr; }
+    .anami-forma--principal { grid-column: auto; }
+    .anami-citacao { font-size: 21px; }
+    .anami-rx { padding: 22px 18px; }
+    .anami-cta-final h2 { font-size: 26px; }
+    .anami-botao { width: 100%; }
+}

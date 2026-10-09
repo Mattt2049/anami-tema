@@ -1,99 +1,311 @@
 /* ============================================================
-   ANAMI FÓRMULAS — TEMA (Loja Integrada)
-   Depende de anami-tokens.css.
+   ANAMI FÓRMULAS — TEMA (Loja Integrada + tema NVitrine)
+   Depende de anami-tokens.css. Classes próprias sempre com prefixo anami-.
+   O tema NVitrine expõe variáveis --ns-*; redefinimos em html:root
+   (especificidade maior que o :root do tema).
    ============================================================ */
 
 
-/* ---------- 1. CABEÇALHO ---------- */
+/* ---------- 0. VARIÁVEIS DO TEMA NVITRINE ---------- */
 
-/* Sticky preserva a altura no fluxo; a classe acrescenta o vidro. */
-#cabecalho {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 99999 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    transition: background-color var(--anami-transicao), border-color var(--anami-transicao), box-shadow var(--anami-transicao) !important;
+html:root {
+    --ns-font-family: var(--anami-fonte);
+    --ns-title-color: var(--anami-texto);
+    --ns-subtitle-color: var(--anami-texto-suave);
+    --ns-text-color: var(--anami-texto);
+    --ns-button-border-radius: var(--anami-raio);
+    --ns-button-mobile-border-radius: var(--anami-raio);
+
+    --ns-banner-top-bg-color: var(--anami-roxo-noite);
+    --ns-banner-top-text-color: var(--anami-branco);
+
+    --ns-header-bg-color: var(--anami-roxo);
+    --ns-header-search-border-radius: 999px;
+    --ns-header-search-border-color: var(--anami-roxo);
+    --ns-header-search-button-icon-color: var(--anami-roxo);
+    --ns-header-cart-badge-bg-color: var(--anami-menta);
+    --ns-header-cart-badge-text-color: var(--anami-roxo-noite);
+    --ns-dropdown-border-top-color: var(--anami-roxo);
+    --ns-dropdown-arrow-color: var(--anami-roxo);
+
+    --ns-main-menu-bg-color: var(--anami-branco);
+    --ns-main-menu-item-link-color: var(--anami-texto);
+    --ns-main-menu-item-font-size: .95rem;
+    --ns-main-menu-item-hover-bg-color: var(--anami-lavanda);
+    --ns-main-menu-item-hover-link-color: var(--anami-roxo);
+    --ns-main-menu-item-hover-opacity: 1;
+    --ns-main-menu-item-border-radius: 999px;
+    --ns-main-menu-all-categories-link-color: var(--anami-roxo);
+    --ns-main-menu-offer-bg-color: var(--anami-menta);
+    --ns-main-menu-offer-link-color: var(--anami-roxo-noite);
+    --ns-main-menu-offer-icon-color: var(--anami-roxo-noite);
+    --ns-main-menu-offer-hover-bg-color: var(--anami-roxo);
+    --ns-main-menu-offer-hover-link-color: var(--anami-branco);
+    --ns-main-menu-offer-hover-icon-color: var(--anami-branco);
+    --ns-main-menu-offer-border-radius: 999px;
+    --ns-main-menu-submenu-hover-link-color: var(--anami-roxo);
+
+    --ns-section-title-color: var(--anami-texto);
+    --ns-section-title-divider-color: var(--anami-roxo);
+    --ns-section-subtitle-color: var(--anami-texto-suave);
+
+    --ns-product-item-title-color: var(--anami-texto);
+    --ns-product-item-price-color: var(--anami-texto-suave);
+    --ns-product-item-price-primary-color: var(--anami-texto-preco);
+    --ns-product-item-disabled-color: var(--anami-cinza);
+
+    --ns-footer-bg-color: var(--anami-roxo-noite);
+    --ns-footer-menu-bg-color: var(--anami-roxo-noite);
+    --ns-footer-text-color: var(--anami-lavanda-texto);
+    --ns-footer-menu-text-color: var(--anami-lavanda-texto);
+    --ns-footer-menu-link-color: var(--anami-branco);
+    --ns-footer-menu-hover-link-color: var(--anami-menta);
+    --ns-footer-menu-title-color: var(--anami-branco);
+    --ns-footer-menu-title-border-bottom: 1px solid rgba(255, 255, 255, .14);
+    --ns-footer-social-icon-bg-color: rgba(255, 255, 255, .12);
+    --ns-footer-social-icon-color: var(--anami-branco);
+
+    --ns-favorite-icon-color: #B8B0C4;
+    --ns-favorite-active-icon-color: var(--anami-roxo);
+    --ns-whatsapp-buy-border: 1px solid var(--anami-roxo);
 }
 
-#cabecalho.anami-cabecalho-rolado {
+
+/* ---------- 1. BASE: FONTE E BOTÕES ---------- */
+
+html body,
+html body :is(button, input, select, textarea),
+html body .titulo,
+html body :is(h1, h2, h3, h4, h5) {
+    font-family: var(--anami-fonte) !important;
+}
+
+html body .botao.principal,
+html body .botao.botao-comprar {
+    font-weight: 600 !important;
+    letter-spacing: .01em;
+    border-radius: var(--anami-raio) !important;
+}
+
+/* Botão padrão da Anami (usado pelo core.js e pelas páginas de conteúdo). */
+.anami-botao {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 999px;
+    border: 1px solid var(--anami-roxo);
+    background: var(--anami-roxo);
+    color: var(--anami-branco) !important;
+    -webkit-text-fill-color: var(--anami-branco);
+    font-family: var(--anami-fonte);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none !important;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color var(--anami-transicao), border-color var(--anami-transicao), color var(--anami-transicao), transform var(--anami-transicao);
+}
+
+.anami-botao > svg { width: 20px; height: 20px; flex: none; fill: currentColor; }
+
+.anami-botao:is(:hover, :focus-visible) {
+    background: var(--anami-roxo-escuro);
+    border-color: var(--anami-roxo-escuro);
+    color: var(--anami-branco) !important;
+    transform: translateY(-1px);
+}
+
+.anami-botao--secundario {
+    background: transparent;
+    color: var(--anami-roxo) !important;
+    -webkit-text-fill-color: var(--anami-roxo);
+}
+
+.anami-botao--secundario:is(:hover, :focus-visible) {
+    background: var(--anami-lavanda);
+    border-color: var(--anami-roxo);
+    color: var(--anami-roxo) !important;
+    -webkit-text-fill-color: var(--anami-roxo);
+}
+
+.anami-botao--menta {
+    background: var(--anami-menta);
+    border-color: var(--anami-menta);
+    color: var(--anami-roxo-noite) !important;
+    -webkit-text-fill-color: var(--anami-roxo-noite);
+}
+
+.anami-botao--menta:is(:hover, :focus-visible) {
+    background: var(--anami-branco);
+    border-color: var(--anami-branco);
+    color: var(--anami-roxo-noite) !important;
+    -webkit-text-fill-color: var(--anami-roxo-noite);
+}
+
+.anami-botao:focus-visible,
+.anami-header-cta:focus-visible,
+.anami-menu-receita a:focus-visible {
+    outline: 3px solid var(--anami-foco-roxo);
+    outline-offset: 2px;
+}
+
+
+/* ---------- 2. CABEÇALHO (montado pelo tema NVitrine) ---------- */
+
+/* O tema fixa o cabeçalho ao rolar (body.is-scrolling). Só acrescentamos o vidro. */
+body.is-scrolling #cabecalho {
     background: var(--anami-vidro-desktop) !important;
     background-image: none !important;
     -webkit-backdrop-filter: blur(18px) saturate(150%);
     backdrop-filter: blur(18px) saturate(150%);
     border-bottom: 1px solid var(--anami-vidro-borda) !important;
     box-shadow: var(--anami-vidro-sombra) !important;
-    transform: translateZ(0);
-}
-
-#cabecalho.anami-cabecalho-rolado > .conteiner.container-primary,
-#cabecalho.anami-cabecalho-rolado > .conteiner.container-primary > .row-fluid,
-#cabecalho.anami-cabecalho-rolado .menu.superior,
-#cabecalho.anami-cabecalho-rolado .menu.superior > .nivel-um {
-    background: transparent !important;
-    background-image: none !important;
-}
-
-/* Gatilhos visíveis do header sempre brancos (inclui hover/foco). */
-#cabecalho :is(
-    .help > .text,
-    .account-info > .text,
-    .menu-user-logged > .menu-user-name,
-    .menu-user-logged > .menu-user-welcome,
-    .carrinho > a,
-    .carrinho > a > :is(span, strong, b, i),
-    .menu.superior > .nivel-um > li > a,
-    .menu.superior > .nivel-um > li > a > :is(strong, i)
-) {
-    color: var(--anami-branco) !important;
-    -webkit-text-fill-color: var(--anami-branco) !important;
-}
-
-#cabecalho :is(
-    .help > span > svg,
-    .account-info > span > svg,
-    .menu-user-logged > svg,
-    .carrinho > a > svg
-) path {
-    color: var(--anami-branco) !important;
-}
-
-#cabecalho .carrinho > a > svg path,
-#cabecalho .menu.superior > .nivel-um > li > a > i {
-    fill: var(--anami-branco) !important;
-}
-
-/* Badge de quantidade do carrinho. */
-#cabecalho .qtd-carrinho {
-    background: var(--anami-verde) !important;
-    border-color: var(--anami-verde) !important;
-    color: var(--anami-branco) !important;
-    -webkit-text-fill-color: var(--anami-branco) !important;
-}
-
-#cabecalho :is(.help > .text, .account-info > .text, .carrinho > a, .menu.superior > .nivel-um > li > a):focus-visible {
-    outline: 3px solid var(--anami-foco-claro) !important;
-    outline-offset: 3px;
 }
 
 @media screen and (max-width: 768px) {
-    #cabecalho.anami-cabecalho-rolado {
-        background: var(--anami-vidro-mobile) !important;
-    }
+    body.is-scrolling #cabecalho { background: var(--anami-vidro-mobile) !important; }
+}
+
+/* Barra do topo (tarja do tema, classe .ns-banner-top). */
+html body .ns-banner-top .conteiner {
+    min-height: 34px;
+    font-size: 13px !important;
+    letter-spacing: .01em;
+    line-height: 1.3;
+}
+
+html body .ns-banner-top a {
+    color: var(--anami-menta) !important;
+    text-decoration: none;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+html body .ns-banner-top a:hover { text-decoration: underline; }
+
+@media screen and (max-width: 767px) {
+    html body .ns-banner-top .anami-topo-desk { display: none; }
+    html body .ns-banner-top .conteiner { font-size: 12.5px !important; }
+}
+
+/* "Fale com a gente" em 2 linhas, sem quebrar palavra por palavra. */
+#cabecalho .header-icons .help .text { white-space: nowrap; line-height: 1.15; max-width: none !important; font-size: 13px; }
+
+/* Busca com cantos redondos e placeholder mais claro. */
+#cabecalho .busca input {
+    border-radius: 999px !important;
+    padding-left: 20px !important;
+    font-size: 14px !important;
+}
+
+/* Botão "Enviar receita" injetado pelo core.js ao lado do carrinho (desktop). */
+#cabecalho .header-icons > .anami-header-cta {
+    margin-left: 18px !important;
+}
+
+.anami-header-cta {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 0 18px 0 14px;
+    border-radius: 999px;
+    background: var(--anami-menta);
+    color: var(--anami-roxo-noite) !important;
+    -webkit-text-fill-color: var(--anami-roxo-noite);
+    font-family: var(--anami-fonte);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-decoration: none !important;
+    white-space: nowrap;
+    box-sizing: border-box;
+    transition: background-color var(--anami-transicao), transform var(--anami-transicao);
+}
+
+.anami-header-cta > svg { width: 20px; height: 20px; fill: currentColor !important; flex: none; }
+.anami-header-cta:hover { background: var(--anami-branco); transform: translateY(-1px); }
+
+/* No celular: só o ícone, entre a logo e o carrinho. */
+#cabecalho .col-mobile-menu { flex-wrap: nowrap !important; gap: 10px; }
+#cabecalho .col-mobile-menu .logo { flex: 1 1 auto; min-width: 0; width: auto !important; justify-content: center; }
+#cabecalho .col-mobile-menu .logo img { max-height: 34px !important; width: auto !important; }
+#cabecalho .col-mobile-menu .carrinho { flex: none; }
+
+#cabecalho .col-mobile-menu .anami-header-cta {
+    flex: none;
+    min-height: 38px;
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+    margin: 0 !important;
+}
+
+#cabecalho .col-mobile-menu .anami-header-cta > span { display: none; }
+
+@media screen and (max-width: 1100px) {
+    #cabecalho .header-icons > .anami-header-cta > span { display: none; }
+    #cabecalho .header-icons > .anami-header-cta { padding: 0 12px; }
 }
 
 
-/* ---------- 2. MINICARRINHO / POPUP ---------- */
+/* ---------- 3. MENU PRINCIPAL (montado pelo tema NVitrine) ---------- */
+
+/* Esconde o item "Páginas" (institucionais ficam no rodapé). */
+.main-menu .nivel-um > li.categoria-paginas,
+.main-menu-mobile .primary-menu > li.categoria-paginas,
+.menu.superior > .nivel-um > li.categoria-paginas {
+    display: none !important;
+}
+
+/* Item "Envie sua receita" injetado pelo core.js (usa o estilo .offer do tema). */
+.main-menu-desktop .nivel-um > li.anami-menu-receita > a {
+    gap: 8px;
+    padding: 9px 16px !important;
+    font-weight: 700 !important;
+}
+
+.main-menu-desktop .nivel-um > li.anami-menu-receita > a > svg {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+}
+
+.main-menu-desktop .nivel-um > li > a > strong { font-weight: 600 !important; }
+
+.main-menu-mobile .primary-menu > li.anami-menu-receita > a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 10px;
+    padding: 12px 14px;
+    border-radius: 999px;
+    background: var(--anami-menta);
+    color: var(--anami-roxo-noite) !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.main-menu-mobile .primary-menu > li.anami-menu-receita > a > svg { width: 20px; height: 20px; fill: currentColor; }
+
+.main-menu-desktop { border-top: 0 !important; box-shadow: 0 6px 18px -10px rgba(33, 26, 39, .25) !important; }
+
+
+/* ---------- 4. MINICARRINHO / POPUP ---------- */
 
 :is(
     #cabecalho .carrinho-interno-ajax .carrinho-rodape > a.botao.principal,
     #comprar-ajax-status .buttons > a.botao.principal.ir-carrinho,
     .fancybox-wrap a.botao.principal.ir-carrinho
 ) {
-    background: var(--anami-roxo-escuro) !important;
+    background: var(--anami-roxo) !important;
     color: var(--anami-branco) !important;
     -webkit-text-fill-color: var(--anami-branco) !important;
+    border-radius: var(--anami-raio) !important;
 }
 
 :is(
@@ -101,7 +313,7 @@
     #comprar-ajax-status .buttons > a.botao.principal.ir-carrinho,
     .fancybox-wrap a.botao.principal.ir-carrinho
 ):is(:hover, :focus, :active) {
-    background: var(--anami-roxo-profundo) !important;
+    background: var(--anami-roxo-escuro) !important;
 }
 
 :is(
@@ -114,42 +326,205 @@
     -webkit-text-fill-color: var(--anami-branco) !important;
 }
 
-:is(
-    #comprar-ajax-status .buttons > a.botao.principal.ir-carrinho,
-    .fancybox-wrap a.botao.principal.ir-carrinho
-):focus-visible {
-    outline: 3px solid var(--anami-foco-claro) !important;
-    outline-offset: 3px;
+
+/* ---------- 5. BANNERS DA HOME ---------- */
+
+/* Mini banners: visíveis no celular (só por CSS) e sem a faixa cortada do flexslider. */
+html body .banner.mini-banner .flexslider {
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    height: auto !important;
+    overflow: hidden !important;
 }
 
+html body .banner.mini-banner .flexslider .slides > li { display: block !important; }
+html body .banner.mini-banner .flexslider .slides > li:not(:first-child) { display: none !important; }
 
-/* ---------- 3. CATÁLOGO (vitrines, categorias, busca) ---------- */
+html body .banner.mini-banner a {
+    display: block;
+    border-radius: var(--anami-raio-card) !important;
+    overflow: hidden;
+    box-shadow: var(--anami-sombra-suave);
+}
 
+html body .banner.mini-banner a img { display: block; width: 100%; height: auto; }
+
+html body.pagina-inicial .banner.mini-banner { margin-top: 22px; }
+
+/* Os espaços vazios da home (blank-home-position3) ficam DENTRO deste bloco:
+   se ele sumir no celular, as seções novas somem junto. */
+@media screen and (max-width: 767px) {
+    html body.pagina-inicial .banner.mini-banner.hidden-phone { display: block !important; }
+    html body .banner.mini-banner .modulo.span4 { width: 100% !important; margin: 0 0 12px !important; float: none !important; }
+}
+
+/* Full banner sem borda/sombra herdadas do flexslider da plataforma.
+   A plataforma limita o viewport do slider a 300px no celular e corta o banner vertical. */
+html body .banner.cheio .flexslider { margin: 0 !important; border: 0 !important; box-shadow: none !important; }
+html body .banner .flexslider .flex-viewport { max-height: none !important; }
+html body .banner.cheio .slides img { display: block; width: 100%; height: auto; }
+
+
+/* ---------- 6. CATÁLOGO: TÍTULOS E CARDS DE PRODUTO ---------- */
+
+html body .listagem .titulo-categoria,
+html body .listagem > .titulo,
+html body h2.titulo.titulo-sessao {
+    font-family: var(--anami-fonte) !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    letter-spacing: -.01em;
+    line-height: 1.15;
+    color: var(--anami-texto) !important;
+    text-align: center;
+    margin: 44px 0 22px !important;
+    padding-bottom: 18px !important;
+    border: 0 !important;
+}
+
+html body .listagem .titulo-categoria strong { font-weight: 700 !important; }
+
+html body .listagem .titulo-categoria .subtitle,
+html body h2.titulo.titulo-sessao .subtitle {
+    display: block !important;
+    margin-top: 6px;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    color: var(--anami-texto-suave) !important;
+    text-transform: none;
+}
+
+html body .listagem .titulo-categoria:after,
+html body .listagem > .titulo:after,
+html body h2.titulo.titulo-sessao:after {
+    width: 56px !important;
+    height: 4px !important;
+    margin-left: -28px !important;
+    border-radius: 4px;
+    background: var(--anami-roxo) !important;
+}
+
+/* Card do produto (vitrines, categoria, busca, relacionados). */
+html body .listagem .listagem-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 12px 12px 14px !important;
+    background: var(--anami-branco);
+    border: 1px solid var(--anami-linha);
+    border-radius: var(--anami-raio-card);
+    transition: box-shadow var(--anami-transicao), border-color var(--anami-transicao), transform var(--anami-transicao);
+}
+
+html body .listagem .listagem-item:hover {
+    border-color: transparent;
+    box-shadow: var(--anami-sombra-card);
+    transform: translateY(-2px);
+}
+
+html body .listagem .listagem-linha .listagem-item .imagem-produto {
+    background: var(--anami-papel);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+html body .listagem .listagem-linha .listagem-item .imagem-produto img {
+    object-fit: contain !important;
+    mix-blend-mode: multiply;
+    padding: 6%;
+    box-sizing: border-box;
+}
+
+html body .listagem .listagem-linha .listagem-item .info-produto { padding: 12px 2px 0 !important; }
+
+html body .listagem .listagem-linha .listagem-item .info-produto .nome-produto {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.7em !important;
+    margin-bottom: 8px !important;
+    font-size: 14.5px !important;
+    font-weight: 600 !important;
+    line-height: 1.35em !important;
+    letter-spacing: 0;
+    color: var(--anami-texto) !important;
+}
+
+html body .listagem .listagem-linha .listagem-item .info-produto .preco-produto {
+    font-size: 13px !important;
+    color: var(--anami-texto-suave) !important;
+}
+
+html body .listagem .listagem-linha .listagem-item .info-produto .preco-produto s.preco-venda {
+    display: block;
+    font-size: 13px !important;
+    color: var(--anami-cinza) !important;
+}
+
+html body .listagem .listagem-linha .listagem-item .info-produto .preco-produto .preco-promocional,
+html body .listagem .listagem-linha .listagem-item .info-produto .preco-produto .cor-principal.titulo {
+    display: block;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    line-height: 1.1;
+    color: var(--anami-texto-preco) !important;
+    -webkit-text-fill-color: var(--anami-texto-preco);
+}
+
+html body .listagem .listagem-linha .listagem-item .info-produto .preco-parcela {
+    display: block;
+    margin-top: 2px;
+    font-size: 12.5px !important;
+    color: var(--anami-texto-suave) !important;
+}
+
+html body .listagem .listagem-linha .listagem-item .info-produto .preco-parcela strong { font-weight: 600 !important; color: inherit !important; }
+
+/* A linha "ou R$ X via Boleto" polui o card. Fica só na página do produto. */
+html body .listagem .listagem-item .desconto-a-vista { display: none !important; }
+
+/* Selo de desconto. */
 html body .bandeiras-produto .bandeira-promocao {
-    background: var(--anami-verde) !important;
+    background: var(--anami-menta) !important;
     background-image: none !important;
-    border-color: var(--anami-verde) !important;
+    border: 0 !important;
+    border-radius: var(--anami-raio-selo) !important;
+    padding: 5px 9px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: .02em;
 }
 
 html body .bandeiras-produto .bandeira-promocao,
 html body .bandeiras-produto .bandeira-promocao :is(small, span, strong) {
-    color: var(--anami-branco) !important;
-    -webkit-text-fill-color: var(--anami-branco) !important;
+    color: var(--anami-menta-escura) !important;
+    -webkit-text-fill-color: var(--anami-menta-escura) !important;
 }
 
-/* Botões "Adicionar ao carrinho" (catálogo e PDP): texto e ícone brancos. */
-html body a.botao-comprar-ajax[href*="/carrinho/produto/"],
-html body a.botao-comprar-ajax[href*="/carrinho/produto/"] :is(i, span, svg, path) {
+/* Botão "Adicionar ao carrinho" do card. */
+html body .listagem .listagem-item .acoes-produto .botao-comprar-ajax,
+html body .listagem .listagem-item .acoes-produto .botao-comprar-ajax :is(i, span, svg, path) {
     color: var(--anami-branco) !important;
     fill: var(--anami-branco) !important;
     -webkit-text-fill-color: var(--anami-branco) !important;
 }
 
+html body .listagem .listagem-item .acoes-produto .botao-comprar-ajax {
+    border-radius: var(--anami-raio) !important;
+    font-weight: 600 !important;
+}
 
-/* ---------- 4. PÁGINA DE PRODUTO — RESUMO ---------- */
+
+/* ---------- 7. PÁGINA DE PRODUTO — RESUMO ---------- */
 
 .principal .info-principal-produto .codigo-produto,
-.principal .acoes-produto .comprar > .disponibilidade-produto {
+.principal .acoes-produto .comprar > .disponibilidade-produto,
+.principal .comprar .whatsapp-buy-button {
     display: none !important;
 }
 
@@ -159,11 +534,8 @@ html body a.botao-comprar-ajax[href*="/carrinho/produto/"] :is(i, span, svg, pat
     margin: 14px 0 20px !important;
 }
 
-.principal .acoes-produto .preco-produto {
-    margin-bottom: 18px !important;
-}
+.principal .acoes-produto .preco-produto { margin-bottom: 18px !important; }
 
-/* Preço antigo acima do atual. */
 .principal .acoes-produto .preco-produto.com-promocao > div {
     display: flex !important;
     flex-direction: column !important;
@@ -197,11 +569,10 @@ html body a.botao-comprar-ajax[href*="/carrinho/produto/"] :is(i, span, svg, pat
 
 .principal .info-principal-produto h1.nome-produto,
 .principal .acoes-produto .preco-produto :is(.preco-venda, .preco-promocional, .preco-promocional span) {
-    font-family: inherit !important;
+    font-family: var(--anami-fonte) !important;
     letter-spacing: normal !important;
 }
 
-/* Partes do preço (geradas pelo anami-core.js). */
 .principal .acoes-produto .anami-preco-moeda {
     display: inline-block !important;
     align-self: flex-start !important;
@@ -210,11 +581,7 @@ html body a.botao-comprar-ajax[href*="/carrinho/produto/"] :is(i, span, svg, pat
     margin: .28em 4px 0 0 !important;
 }
 
-.principal .acoes-produto .anami-preco-inteiro {
-    display: inline-block !important;
-    font-size: 1em !important;
-    line-height: 1 !important;
-}
+.principal .acoes-produto .anami-preco-inteiro { display: inline-block !important; font-size: 1em !important; line-height: 1 !important; }
 
 .principal .acoes-produto .anami-preco-centavos {
     display: inline-block !important;
@@ -226,32 +593,29 @@ html body a.botao-comprar-ajax[href*="/carrinho/produto/"] :is(i, span, svg, pat
     vertical-align: baseline !important;
 }
 
-/* Selo "X% OFF" ao lado do preço. */
 .principal .acoes-produto .preco-produto .preco-promocional::after {
     content: attr(data-anami-desconto);
     display: none;
     align-items: center;
     align-self: center;
-    background-color: var(--anami-verde);
-    color: var(--anami-branco);
-    -webkit-text-fill-color: var(--anami-branco);
-    font-family: inherit !important;
+    background-color: var(--anami-menta);
+    color: var(--anami-menta-escura);
+    -webkit-text-fill-color: var(--anami-menta-escura);
+    font-family: var(--anami-fonte) !important;
     font-size: 12px !important;
     font-weight: 700 !important;
     line-height: 1 !important;
     letter-spacing: normal !important;
     border-radius: var(--anami-raio-selo);
-    padding: 3px 5px;
-    margin: 0 0 0 8px !important;
+    padding: 5px 7px;
+    margin: 0 0 0 10px !important;
     white-space: nowrap;
 }
 
-.principal .acoes-produto .preco-produto .preco-promocional[data-anami-desconto]:not([data-anami-desconto=""])::after {
-    display: inline-flex;
-}
+.principal .acoes-produto .preco-produto .preco-promocional[data-anami-desconto]:not([data-anami-desconto=""])::after { display: inline-flex; }
 
 
-/* ---------- 5. PÁGINA DE PRODUTO — CTA DE PRESCRIÇÃO ---------- */
+/* ---------- 8. PÁGINA DE PRODUTO — CTA DE PRESCRIÇÃO ---------- */
 
 .anami-botao-principal { order: 1; }
 
@@ -264,11 +628,12 @@ html body a.botao-comprar-ajax[href*="/carrinho/produto/"] :is(i, span, svg, pat
     min-height: 48px;
     padding: 0 18px;
     margin: 12px 0 0 !important;
-    border: 1px solid var(--anami-roxo-escuro) !important;
+    border: 1px solid var(--anami-roxo) !important;
     border-radius: var(--anami-raio);
     background: transparent !important;
-    color: var(--anami-roxo-escuro) !important;
-    -webkit-text-fill-color: var(--anami-roxo-escuro) !important;
+    color: var(--anami-roxo) !important;
+    -webkit-text-fill-color: var(--anami-roxo) !important;
+    font-family: var(--anami-fonte);
     font-weight: 700;
     text-decoration: none !important;
     box-sizing: border-box;
@@ -278,106 +643,145 @@ html body a.botao-comprar-ajax[href*="/carrinho/produto/"] :is(i, span, svg, pat
     transition: background-color var(--anami-transicao), color var(--anami-transicao), border-color var(--anami-transicao);
 }
 
-.anami-whatsapp-produto > svg {
-    width: 18px;
-    height: 18px;
-    flex: 0 0 auto;
-    fill: currentColor !important;
-}
+.anami-whatsapp-produto > svg { width: 18px; height: 18px; flex: 0 0 auto; fill: currentColor !important; }
 
 .anami-whatsapp-produto:is(:hover, :focus, :active) {
-    border-color: var(--anami-roxo-profundo) !important;
-    background: var(--anami-roxo-profundo) !important;
+    border-color: var(--anami-roxo-escuro) !important;
+    background: var(--anami-roxo-escuro) !important;
     color: var(--anami-branco) !important;
     -webkit-text-fill-color: var(--anami-branco) !important;
 }
 
-.anami-whatsapp-produto:focus-visible {
-    outline: 3px solid var(--anami-foco-roxo);
-    outline-offset: 2px;
-}
+.anami-whatsapp-produto:focus-visible { outline: 3px solid var(--anami-foco-roxo); outline-offset: 2px; }
 
 
-/* ---------- 6. DESCRIÇÃO DO PRODUTO ---------- */
+/* ---------- 9. DESCRIÇÃO DO PRODUTO ---------- */
 
 .anami-descricao { color: var(--anami-texto); }
-
-.anami-descricao table {
-    border-collapse: separate !important;
-    border-spacing: 0 !important;
-}
-
-.anami-descricao :is(tr, td) {
-    border-style: none !important;
-    outline: none !important;
-}
-
-.anami-descricao table td {
-    line-height: 1.6 !important;
-}
+.anami-descricao table { border-collapse: separate !important; border-spacing: 0 !important; }
+.anami-descricao :is(tr, td) { border-style: none !important; outline: none !important; }
+.anami-descricao table td { line-height: 1.6 !important; }
 
 .anami-descricao .anami-bloco-roxo,
-.anami-descricao .anami-bloco-roxo :is(h1, h2, h3, h4, h5, strong) {
-    color: var(--anami-branco) !important;
+.anami-descricao .anami-bloco-roxo :is(h1, h2, h3, h4, h5, strong) { color: var(--anami-branco) !important; }
+.anami-descricao .anami-bloco-roxo :is(p, table td) { color: var(--anami-lavanda-texto) !important; }
+.anami-descricao .anami-bloco-roxo table td { padding: 10px 0 !important; }
+.anami-descricao .anami-bloco-roxo a { background-color: var(--anami-branco) !important; color: var(--anami-roxo) !important; }
+
+
+/* ---------- 10. RODAPÉ ---------- */
+
+html body #rodape .institucional .conteiner { padding-top: 44px; padding-bottom: 20px; }
+
+html body #rodape .institucional .titulo {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin: 0 0 16px !important;
+    padding: 0 0 10px !important;
 }
 
-.anami-descricao .anami-bloco-roxo :is(p, table td) {
-    color: var(--anami-roxo-claro) !important;
+html body #rodape .institucional a { font-size: 14.5px !important; line-height: 1.6; }
+html body #rodape .institucional p { font-size: 14px !important; line-height: 1.6 !important; }
+html body #rodape .institucional li { line-height: 1.6em !important; margin-bottom: 6px; }
+html body #rodape .contato-rodape a { font-weight: 600 !important; }
+
+/* Pagamento e selos sobre papel claro. */
+html body #rodape .pagamento-selos {
+    background: var(--anami-papel) !important;
+    color: var(--anami-texto) !important;
+    border-top: 1px solid var(--anami-linha);
 }
 
-.anami-descricao .anami-bloco-roxo table td {
-    padding: 10px 0 !important;
+html body #rodape .pagamento-selos .titulo {
+    color: var(--anami-texto-suave) !important;
+    font-size: 12px !important;
+    letter-spacing: .1em;
+    text-transform: uppercase;
 }
 
-.anami-descricao .anami-bloco-roxo a {
-    background-color: var(--anami-branco) !important;
-    color: var(--anami-roxo) !important;
+/* Faixa legal (copyright + dados injetados). */
+html body #rodape > div:last-child {
+    background: var(--anami-papel) !important;
+    color: var(--anami-texto-suave) !important;
+    font-size: 12px !important;
+    line-height: 1.7;
+    padding: 10px 0 18px;
+}
+
+html body #rodape > div:last-child :is(p, div) { color: var(--anami-texto-suave) !important; }
+html body #rodape .dev-logo { opacity: .55; }
+
+/* Só esconde o bloco legal enquanto o JS não o reposiciona. */
+.anami-js #anami-dados-legais:not([data-movido]) { visibility: hidden; }
+
+
+/* ---------- 11. WHATSAPP FLUTUANTE (do tema) ---------- */
+
+html body .whatsapp-float,
+html body a.whatsapp-float-button,
+html body .whatsapp-floating {
+    box-shadow: 0 10px 24px rgba(33, 26, 39, .22) !important;
 }
 
 
-/* ---------- 7. RODAPÉ — DADOS LEGAIS ---------- */
-
-/* Só esconde quando o JS está ativo; sem JS, o bloco aparece normalmente. */
-.anami-js #anami-dados-legais:not([data-movido]) {
-    visibility: hidden;
-}
-
-
-/* ---------- 8. MOBILE ---------- */
+/* ---------- 12. MOBILE ---------- */
 
 @media screen and (max-width: 768px) {
-    .anami-descricao .anami-bloco-roxo {
-        width: 100% !important;
-        padding: 24px 20px !important;
-    }
+    .anami-descricao .anami-bloco-roxo { width: 100% !important; padding: 24px 20px !important; }
+    .anami-descricao img { display: block !important; max-width: 100% !important; height: auto !important; }
+    .anami-descricao .anami-bloco-roxo p { font-size: 14px !important; line-height: 1.7 !important; }
 
-    .anami-descricao img {
-        display: block !important;
-        max-width: 100% !important;
-        height: auto !important;
-    }
-
-    .anami-descricao .anami-bloco-roxo p {
-        font-size: 14px !important;
-        line-height: 1.7 !important;
-    }
-
-    .principal .info-principal-produto h1.nome-produto {
-        font-size: 24px !important;
-        line-height: 1.2 !important;
-        margin: 10px 0 16px !important;
-    }
-
+    .principal .info-principal-produto h1.nome-produto { font-size: 24px !important; line-height: 1.2 !important; margin: 10px 0 16px !important; }
     .principal .acoes-produto .preco-produto { margin-bottom: 14px !important; }
     .principal .acoes-produto .preco-produto .preco-promocional { font-size: 38px !important; }
+    .principal .acoes-produto .preco-produto .preco-promocional::after { font-size: 11px !important; padding: 4px 5px !important; margin-left: 7px !important; }
 
-    .principal .acoes-produto .preco-produto .preco-promocional::after {
-        font-size: 11px !important;
-        padding: 3px 4px !important;
-        margin-left: 7px !important;
+    html body .listagem .titulo-categoria { font-size: 23px !important; margin: 30px 0 14px !important; }
+    html body .listagem .listagem-item { padding: 8px 8px 62px !important; }
+    html body .listagem .listagem-linha .listagem-item .info-produto .nome-produto { font-size: 13.5px !important; }
+    html body .listagem .listagem-linha .listagem-item .info-produto .preco-produto .preco-promocional { font-size: 19px !important; }
+
+    /* No card do celular não cabe seletor de quantidade + botão: fica só o botão, largura total. */
+    html body .listagem .listagem-item .acoes-produto > div,
+    html body .listagem .listagem-item .acoes-produto .product-item-quantity { display: none !important; }
+    html body .listagem .listagem-item :is(.acoes-produto, .acoes-produto-responsiva) a {
+        width: 100% !important;
+        margin: 0 !important;
+        font-size: 13px !important;
+        padding: 0 10px !important;
+    }
+
+    /* Categoria e busca: produtos fluem em 2 colunas sem deixar um sozinho por linha. */
+    html body:is(.pagina-categoria, .pagina-busca, .pagina-marca) .listagem > ul[data-produtos-linha]:not(.produtos-carrossel) {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0;
+    }
+    html body:is(.pagina-categoria, .pagina-busca, .pagina-marca) .listagem > ul[data-produtos-linha]:not(.produtos-carrossel) > li.listagem-linha,
+    html body:is(.pagina-categoria, .pagina-busca, .pagina-marca) .listagem > ul[data-produtos-linha]:not(.produtos-carrossel) > li.listagem-linha > ul { display: contents; }
+    html body:is(.pagina-categoria, .pagina-busca, .pagina-marca) .listagem > ul[data-produtos-linha]:not(.produtos-carrossel) li[class*="span"] {
+        width: auto !important;
+        margin: 0 !important;
+        float: none !important;
+        min-width: 0;
+    }
+    /* Os "clearfix" da plataforma virariam células vazias na grade. */
+    html body:is(.pagina-categoria, .pagina-busca, .pagina-marca) .listagem > ul[data-produtos-linha]:not(.produtos-carrossel) > li.listagem-linha::before,
+    html body:is(.pagina-categoria, .pagina-busca, .pagina-marca) .listagem > ul[data-produtos-linha]:not(.produtos-carrossel) > li.listagem-linha::after,
+    html body:is(.pagina-categoria, .pagina-busca, .pagina-marca) .listagem > ul[data-produtos-linha]:not(.produtos-carrossel) > li.listagem-linha > ul::before,
+    html body:is(.pagina-categoria, .pagina-busca, .pagina-marca) .listagem > ul[data-produtos-linha]:not(.produtos-carrossel) > li.listagem-linha > ul::after { display: none !important; content: none !important; }
+
+    html body .listagem .listagem-linha .listagem-item .info-produto .preco-parcela {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 12px !important;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    #cabecalho, .anami-whatsapp-produto { transition: none !important; }
+    #cabecalho, .anami-whatsapp-produto, .anami-botao, .anami-header-cta, .listagem .listagem-item { transition: none !important; }
 }
