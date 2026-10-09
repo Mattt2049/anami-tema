@@ -1,12 +1,13 @@
 /* ============================================================
    ANAMI FÓRMULAS — CORE JS (Loja Integrada + tema NVitrine)
    Módulos: tracking de WhatsApp, cabeçalho (botão "Enviar receita"),
-   menu, botão flutuante, página de produto, dados legais e seções da home.
+   menu, botão flutuante, página de produto (preço, garantias, descrição em
+   blocos), categoria (texto no fim da lista), dados legais e seções da home.
    ============================================================ */
 (function () {
     'use strict';
 
-    var VERSAO = '1.2.1';
+    var VERSAO = '1.3.0';
     var WHATSAPP = '5511950358443';
     var CNPJ = '46.555.995/0001-58';
 
@@ -146,8 +147,15 @@
         barra.classList.add('anami-rotacao');
         var i = 0;
         msgs[0].classList.add('anami-ativa');
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        /* Troca sempre; com animações desligadas no aparelho só some o efeito de entrada (CSS).
+           Pausa enquanto o mouse ou o foco estão na barra, para dar tempo de clicar no WhatsApp. */
+        var pausa = false;
+        barra.addEventListener('mouseenter', function () { pausa = true; });
+        barra.addEventListener('mouseleave', function () { pausa = false; });
+        barra.addEventListener('focusin', function () { pausa = true; });
+        barra.addEventListener('focusout', function () { pausa = false; });
         setInterval(function () {
+            if (pausa) return;
             msgs[i].classList.remove('anami-ativa');
             i = (i + 1) % msgs.length;
             msgs[i].classList.add('anami-ativa');
@@ -311,6 +319,105 @@
         );
     }
 
+    /* ---------- 5b. PDP: garantias e descrição em blocos ---------- */
+
+    var GARANTIAS = [
+        ['escudo', 'Insumos com laudo', 'procedência conferida'],
+        ['jaleco', 'Farmacêutica responsável', 'CRF-SP 76104'],
+        ['caminhao', 'Entrega para todo o Brasil', 'calcule o frete pelo CEP'],
+        ['cadeado', 'Compra segura', 'Pix, cartão ou boleto']
+    ];
+
+    function iniciarGarantias() {
+        var acoes = document.querySelector('.principal > .acoes-produto') ||
+            document.querySelector('.principal .acoes-produto');
+        if (!acoes || document.querySelector('.anami-garantias')) return;
+        acoes.insertAdjacentHTML('afterend',
+            '<ul class="anami-garantias" aria-label="Garantias da Anami">' +
+            GARANTIAS.map(function (g) {
+                return '<li>' + ICONES[g[0]] + '<span><strong>' + g[1] + '</strong>' + g[2] + '</span></li>';
+            }).join('') + '</ul>');
+    }
+
+    /* Cada subtítulo (h3) da descrição vira um bloco que abre ao tocar.
+       Aceita os dois formatos que existem na loja: h3 solto na descrição ou
+       h3 como primeiro filho de uma div. Menos de 2 subtítulos = não mexe.
+       Os nós são movidos (nunca recriados), então o texto fica igual para o Google. */
+    function tituloDeBloco(el) {
+        if (el.tagName === 'H3') return el;
+        var primeiro = el.firstElementChild;
+        return (/^(DIV|SECTION)$/.test(el.tagName) && primeiro && primeiro.tagName === 'H3') ? primeiro : null;
+    }
+
+    function iniciarDescricao() {
+        var desc = document.getElementById('descricao');
+        if (!desc || desc.hasAttribute('data-anami-acordeao')) return;
+
+        var raiz = desc;
+        while (raiz.children.length === 1 && /^(DIV|SECTION|ARTICLE)$/.test(raiz.firstElementChild.tagName)) {
+            raiz = raiz.firstElementChild;
+        }
+        var filhos = Array.prototype.slice.call(raiz.children);
+        if (filhos.filter(tituloDeBloco).length < 2) return;
+        desc.setAttribute('data-anami-acordeao', '1');
+
+        var corpo = null;
+        filhos.forEach(function (el) {
+            var h = tituloDeBloco(el);
+            if (!h) {
+                if (corpo) corpo.appendChild(el);
+                return;
+            }
+            var bloco = document.createElement('details');
+            bloco.className = 'anami-acordeao';
+            var resumo = document.createElement('summary');
+            corpo = document.createElement('div');
+            corpo.className = 'anami-acordeao-corpo';
+            raiz.insertBefore(bloco, el);
+            /* Títulos colados com cor própria (ex.: branco !important para fundo roxo)
+               ficariam invisíveis no bloco: o visual do título passa a ser o do tema. */
+            h.removeAttribute('style');
+            resumo.appendChild(h);
+            bloco.appendChild(resumo);
+            bloco.appendChild(corpo);
+            if (el !== h) corpo.appendChild(el);
+        });
+
+        /* O primeiro bloco e os que têm advertências/cuidados ficam sempre abertos. */
+        raiz.querySelectorAll('details.anami-acordeao').forEach(function (b, i) {
+            if (i === 0 || /advert[êe]ncia|cuidados importantes/i.test(textoLimpo(b))) b.setAttribute('open', '');
+        });
+    }
+
+    /* ---------- 5c. categoria: texto da categoria no fim da lista ---------- */
+
+    /* O texto que o painel põe na coluna da esquerda (escondida no celular)
+       vai para depois dos produtos. Os estilos colados junto com o texto saem;
+       o visual vem do anami-catalogo.css. */
+    function iniciarCategoria() {
+        if (!document.body.classList.contains('pagina-categoria')) return;
+        var conteudo = document.querySelector('.secao-principal .conteudo');
+        var comp = document.querySelector('.secao-principal .coluna .componente');
+        if (!conteudo || !comp || comp.hasAttribute('data-anami-movido')) return;
+
+        var interno = comp.querySelector('.interno') || comp;
+        var rotulo = interno.querySelector('h4.titulo');
+        if (textoLimpo(interno).length <= textoLimpo(rotulo).length) return;
+
+        var secao = document.createElement('section');
+        secao.className = 'anami-cat-texto';
+        Array.prototype.slice.call(interno.childNodes).forEach(function (n) {
+            if (n !== rotulo) secao.appendChild(n);
+        });
+        secao.querySelectorAll('[style]:not(img)').forEach(function (el) { el.removeAttribute('style'); });
+        secao.querySelectorAll('p').forEach(function (p) {
+            if (!p.textContent.trim() && !p.querySelector('img, iframe')) p.parentNode.removeChild(p);
+        });
+
+        comp.setAttribute('data-anami-movido', '1');
+        conteudo.appendChild(secao);
+    }
+
     /* ---------- 6. dados legais no rodapé ---------- */
 
     function moverDadosLegais() {
@@ -347,6 +454,9 @@
 
     var ICONES = {
         escudo: '<svg class="anami-i" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="m9 12 2 2 4-4"/></svg>',
+        jaleco: '<svg class="anami-i" viewBox="0 0 24 24"><circle cx="12" cy="6" r="3"/><path d="M5 21v-5a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v5"/><path d="M12 11v10M9 11l3 4 3-4"/></svg>',
+        caminhao: '<svg class="anami-i" viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 10h4l3 3v3h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>',
+        cadeado: '<svg class="anami-i" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg>',
         capsula: '<svg class="anami-ilustra" viewBox="0 0 64 64"><rect x="10" y="24" width="44" height="18" rx="9" transform="rotate(-35 32 33)"/><path d="M26 22l12 17"/><circle cx="48" cy="48" r="3"/><circle cx="14" cy="50" r="2"/></svg>',
         vitamina: '<svg class="anami-ilustra" viewBox="0 0 64 64"><path d="M20 10h24v8H20z"/><path d="M22 18h20l2 34H20z"/><path d="M26 30h12M26 38h12"/></svg>',
         treino: '<svg class="anami-ilustra" viewBox="0 0 64 64"><path d="M8 26h8v12H8zM48 26h8v12h-8zM16 29h32v6H16z"/><path d="M4 30h4v4H4zM56 30h4v4h-4z"/></svg>',
@@ -519,7 +629,8 @@
         });
 
         quandoTemaPronto(function () {
-            [iniciarBarraTopo, iniciarCabecalho, iniciarMenu, iniciarFlutuante, iniciarHome].forEach(function (m) {
+            [iniciarBarraTopo, iniciarCabecalho, iniciarMenu, iniciarFlutuante, iniciarHome,
+                iniciarGarantias, iniciarDescricao, iniciarCategoria].forEach(function (m) {
                 try { m(); } catch (e) { if (window.console) console.warn('[anami] falha em ' + m.name, e); }
             });
             aoMudarEstado(function () {

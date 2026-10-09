@@ -20,6 +20,8 @@ html:root {
     --ns-banner-top-text-color: var(--anami-branco);
 
     --ns-header-bg-color: var(--anami-roxo);
+    --ns-header-hover-link-color: var(--anami-menta);
+    --ns-header-hover-icon-color: var(--anami-menta);
     --ns-header-search-border-radius: 999px;
     --ns-header-search-border-color: var(--anami-roxo);
     --ns-header-search-button-icon-color: var(--anami-roxo);
@@ -36,9 +38,9 @@ html:root {
     --ns-main-menu-item-hover-opacity: 1;
     --ns-main-menu-item-border-radius: 999px;
     --ns-main-menu-all-categories-link-color: var(--anami-roxo);
-    --ns-main-menu-offer-bg-color: var(--anami-menta);
-    --ns-main-menu-offer-link-color: var(--anami-roxo-noite);
-    --ns-main-menu-offer-icon-color: var(--anami-roxo-noite);
+    --ns-main-menu-offer-bg-color: var(--anami-roxo-noite);
+    --ns-main-menu-offer-link-color: var(--anami-branco);
+    --ns-main-menu-offer-icon-color: var(--anami-branco);
     --ns-main-menu-offer-hover-bg-color: var(--anami-roxo);
     --ns-main-menu-offer-hover-link-color: var(--anami-branco);
     --ns-main-menu-offer-hover-icon-color: var(--anami-branco);
@@ -223,9 +225,9 @@ html body .ns-banner-top a:hover { text-decoration: underline; }
     min-height: 42px;
     padding: 0 18px 0 14px;
     border-radius: 999px;
-    background: var(--anami-menta);
-    color: var(--anami-roxo-noite) !important;
-    -webkit-text-fill-color: var(--anami-roxo-noite);
+    background: var(--anami-whatsapp);
+    color: var(--anami-whatsapp-tinta) !important;
+    -webkit-text-fill-color: var(--anami-whatsapp-tinta);
     font-family: var(--anami-fonte);
     font-size: 14px;
     font-weight: 700;
@@ -237,7 +239,7 @@ html body .ns-banner-top a:hover { text-decoration: underline; }
 }
 
 .anami-header-cta > svg { width: 20px; height: 20px; fill: currentColor !important; flex: none; }
-.anami-header-cta:hover { background: var(--anami-branco); transform: translateY(-1px); }
+.anami-header-cta:hover { background: var(--anami-branco); color: var(--anami-whatsapp-tinta) !important; transform: translateY(-1px); }
 
 /* No celular: só o ícone, entre a logo e o carrinho. */
 #cabecalho .col-mobile-menu { flex-wrap: nowrap !important; gap: 10px; }
@@ -293,8 +295,8 @@ html body .ns-banner-top a:hover { text-decoration: underline; }
     margin: 4px 0 10px;
     padding: 12px 14px;
     border-radius: 999px;
-    background: var(--anami-menta);
-    color: var(--anami-roxo-noite) !important;
+    background: var(--anami-roxo-noite);
+    color: var(--anami-branco) !important;
     font-weight: 700;
     text-decoration: none;
 }
@@ -527,6 +529,18 @@ html body .listagem .listagem-item .acoes-produto .botao-comprar-ajax {
     border-radius: var(--anami-raio) !important;
     font-weight: 600 !important;
 }
+
+/* Ao passar o mouse, quantidade + botão sobem por cima do preço: fundo branco e sombra sutil
+   para separar do card. */
+html body .listagem .listagem-linha .listagem-item:is(:hover, :focus-within) .acoes-produto {
+    background: var(--anami-branco) !important;
+    border-radius: 0 0 var(--anami-raio-card) var(--anami-raio-card);
+    box-shadow: 0 -10px 16px -12px rgba(33, 26, 39, .22);
+}
+
+html body .listagem .listagem-linha .listagem-item .acoes-produto .botao-comprar-ajax { box-shadow: 0 6px 14px -4px rgba(95, 24, 239, .35); }
+html body .listagem .listagem-linha .listagem-item .acoes-produto .product-item-quantity { box-shadow: 0 6px 14px -6px rgba(33, 26, 39, .22); border-radius: var(--anami-raio); }
+html body .listagem .listagem-linha .listagem-item .acoes-produto .product-item-quantity button { box-shadow: none; }
 
 
 /* ---------- 7. PÁGINA DE PRODUTO — RESUMO ---------- */

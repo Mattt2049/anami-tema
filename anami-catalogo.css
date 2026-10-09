@@ -1,0 +1,455 @@
+/* ============================================================
+   ANAMI FÓRMULAS — CATÁLOGO (página de produto e categoria)
+   Vem depois do anami-tema.css. Usa os tokens do anami-tokens.css.
+   ============================================================ */
+
+/* ---------- 1. PDP: GARANTIAS (abaixo do botão Comprar) ---------- */
+
+.anami-garantias {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 18px 0 22px !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.anami-garantias li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 !important;
+    padding: 12px;
+    background: var(--anami-papel);
+    border-radius: 12px;
+    font-family: var(--anami-fonte);
+    font-size: 12.5px;
+    line-height: 1.25;
+    color: var(--anami-texto-suave);
+}
+
+.anami-garantias .anami-i {
+    width: 34px;
+    height: 34px;
+    padding: 7px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: var(--anami-lavanda);
+    color: var(--anami-roxo);
+    stroke-width: 1.8;
+}
+
+.anami-garantias strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--anami-texto);
+}
+
+/* ---------- 2. PDP: FRETE, COMPARTILHAR ---------- */
+
+.pagina-produto #formCalcularCep .input-cep {
+    height: 42px !important;
+    box-sizing: border-box;
+    border: 1px solid var(--anami-linha) !important;
+    border-radius: var(--anami-raio) 0 0 var(--anami-raio) !important;
+    font-family: var(--anami-fonte) !important;
+    box-shadow: none !important;
+}
+
+.pagina-produto #formCalcularCep .btn {
+    height: 42px !important;
+    padding: 0 18px !important;
+    background: var(--anami-roxo) !important;
+    border: 0 !important;
+    border-radius: 0 var(--anami-raio) var(--anami-raio) 0 !important;
+    color: var(--anami-branco) !important;
+    font-family: var(--anami-fonte) !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.pagina-produto #formCalcularCep .btn:is(:hover, :focus) { background: var(--anami-roxo-escuro) !important; }
+
+/* ---------- 3. PDP: DESCRIÇÃO EM BLOCOS ---------- */
+
+.pagina-produto #descricao {
+    max-width: 880px;
+    margin: 0 auto;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--anami-texto);
+}
+
+.anami-acordeao {
+    margin: 0 !important;
+    border-bottom: 1px solid var(--anami-linha);
+}
+
+.anami-acordeao:first-of-type { border-top: 1px solid var(--anami-linha); }
+
+.anami-acordeao > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 2px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.anami-acordeao > summary::-webkit-details-marker { display: none; }
+
+.anami-acordeao > summary > h3 {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: var(--anami-fonte) !important;
+    font-size: 19px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    color: var(--anami-texto) !important;
+}
+
+/* seta: um "v" desenhado com bordas, gira quando o bloco abre */
+.anami-acordeao > summary::after {
+    content: "";
+    flex: none;
+    width: 9px;
+    height: 9px;
+    margin-right: 6px;
+    border-right: 2px solid var(--anami-roxo);
+    border-bottom: 2px solid var(--anami-roxo);
+    transform: translateY(-3px) rotate(45deg);
+    transition: transform var(--anami-transicao);
+}
+
+.anami-acordeao[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+
+.anami-acordeao > summary:hover > h3 { color: var(--anami-roxo) !important; }
+
+.anami-acordeao > summary:focus-visible {
+    outline: 3px solid var(--anami-foco-roxo);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.anami-acordeao-corpo { padding: 0 2px 20px; }
+
+.anami-acordeao-corpo table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border: 0 !important;
+    font-size: 14px;
+}
+
+.anami-acordeao-corpo table :is(th, td) {
+    padding: 10px 12px !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--anami-linha) !important;
+    text-align: left !important;
+    background: transparent !important;
+}
+
+.anami-acordeao-corpo table th {
+    font-weight: 600 !important;
+    background: var(--anami-lavanda) !important;
+    color: var(--anami-texto) !important;
+}
+
+.anami-acordeao-corpo ul { margin: 0 0 12px 20px !important; }
+.anami-acordeao-corpo li { margin-bottom: 4px; }
+
+/* ---------- 4. PDP: AVALIAÇÕES E BARRA FLUTUANTE ---------- */
+
+.pagina-produto #comentarios-container:not(.hide) #comentarios {
+    max-width: 880px;
+    margin: 0 auto;
+}
+
+/* Barra que aparece no pé da tela ao rolar (só computador). O NVitrine monta:
+   .conteiner > .image, .nome-produto, .close_float, .acoes-produto (preço + comprar). */
+.pagina-produto .acoes-flutuante {
+    background: var(--anami-branco) !important;
+    border: 0 !important;
+    border-top: 1px solid var(--anami-linha) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 -10px 30px rgba(33, 26, 39, .10) !important;
+    font-family: var(--anami-fonte) !important;
+}
+
+.pagina-produto .acoes-flutuante > .conteiner {
+    display: flex !important;
+    align-items: center;
+    gap: 18px;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+.pagina-produto .acoes-flutuante > .conteiner::before,
+.pagina-produto .acoes-flutuante > .conteiner::after { display: none !important; content: none !important; }
+
+.pagina-produto .acoes-flutuante > .conteiner > * {
+    position: static !important;
+    float: none !important;
+    margin: 0 !important;
+}
+
+.pagina-produto .acoes-flutuante .image { flex: none; width: 56px !important; height: 56px !important; }
+
+.pagina-produto .acoes-flutuante .image img {
+    width: 56px !important;
+    height: 56px !important;
+    object-fit: contain;
+    background: var(--anami-papel);
+    border-radius: var(--anami-raio);
+}
+
+.pagina-produto .acoes-flutuante .nome-produto {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: var(--anami-fonte) !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    color: var(--anami-texto) !important;
+}
+
+.pagina-produto .acoes-flutuante .acoes-produto {
+    display: flex !important;
+    align-items: center;
+    gap: 18px;
+    flex: none;
+    width: auto !important;
+}
+
+.pagina-produto .acoes-flutuante .acoes-produto > div:first-child,
+.pagina-produto .acoes-flutuante .preco-produto { width: auto !important; margin: 0 !important; float: none !important; }
+
+.pagina-produto .acoes-flutuante .preco-produto { text-align: right; line-height: 1.2; }
+
+.pagina-produto .acoes-flutuante .preco-produto .preco-venda { font-size: 13px !important; margin-right: 6px; }
+
+.pagina-produto .acoes-flutuante .preco-produto .preco-promocional {
+    font-family: var(--anami-fonte) !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: var(--anami-texto-preco) !important;
+}
+
+.pagina-produto .acoes-flutuante .preco-parcela { font-size: 12px !important; color: var(--anami-texto-suave) !important; }
+
+.pagina-produto .acoes-flutuante :is(.desconto-a-vista, .disponibilidade-produto) { display: none !important; }
+
+.pagina-produto .acoes-flutuante .comprar { width: auto !important; margin: 0 !important; float: none !important; }
+
+.pagina-produto .acoes-flutuante .botao-comprar {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    height: 48px !important;
+    padding: 0 26px !important;
+    white-space: nowrap;
+    font-size: 16px !important;
+    line-height: 48px !important;
+    border-radius: var(--anami-raio) !important;
+    background: var(--anami-roxo) !important;
+    border-color: var(--anami-roxo) !important;
+}
+
+.pagina-produto .acoes-flutuante .close_float { order: 9; flex: none; color: var(--anami-texto-suave) !important; }
+
+/* ---------- 5. CATEGORIA: TÍTULO ANTES DA ORDENAÇÃO ---------- */
+
+/* A plataforma põe o nome da categoria depois da barra "Relevância".
+   Com flex, a ordem visual fica: banner, nome, ordenação, produtos, texto. */
+.pagina-categoria .secao-principal .conteudo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.pagina-categoria .secao-principal .conteudo::before,
+.pagina-categoria .secao-principal .conteudo::after { display: none !important; content: none !important; }
+
+.pagina-categoria .secao-principal .conteudo > * { order: 3; min-width: 0; }
+.pagina-categoria .secao-principal .conteudo > .banner { order: 0; }
+.pagina-categoria .secao-principal .conteudo > h1 { order: 1; }
+.pagina-categoria .secao-principal .conteudo > .ordenar-listagem.topo { order: 2; }
+.pagina-categoria .secao-principal .conteudo > .ordenar-listagem.rodape { order: 4; }
+.pagina-categoria .secao-principal .conteudo > .anami-cat-texto { order: 5; }
+
+.pagina-categoria .secao-principal .conteudo > h1 {
+    margin: 8px 0 12px !important;
+    font-family: var(--anami-fonte) !important;
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    letter-spacing: -.01em;
+    color: var(--anami-texto) !important;
+}
+
+.pagina-categoria .secao-principal .conteudo > .ordenar-listagem.topo {
+    margin-bottom: 8px !important;
+    padding-bottom: 12px !important;
+}
+
+/* ---------- 6. CATEGORIA: MENU LATERAL E FILTROS ---------- */
+
+.pagina-categoria .coluna :is(.menu.lateral, .filtro) {
+    font-family: var(--anami-fonte) !important;
+}
+
+.pagina-categoria .coluna .menu.lateral .nivel-dois a {
+    border-radius: 8px;
+    transition: background var(--anami-transicao), color var(--anami-transicao);
+}
+
+.pagina-categoria .coluna .menu.lateral .nivel-dois a:hover {
+    background: var(--anami-lavanda) !important;
+    color: var(--anami-roxo) !important;
+}
+
+/* a plataforma limita a lista a 163 px com rolagem e corta o último filtro */
+.pagina-categoria .coluna .filtro .atributo-lista ul {
+    max-height: none !important;
+    overflow: visible !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 0 !important;
+    border: 0 !important;
+}
+
+.pagina-categoria .coluna .filtro .atributo-lista li {
+    float: none !important;
+    width: auto !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: none !important;
+}
+
+.pagina-categoria .coluna .filtro .atributo-lista a {
+    display: inline-flex !important;
+    align-items: center;
+    padding: 7px 12px !important;
+    border: 1px solid var(--anami-linha) !important;
+    border-radius: 999px !important;
+    background: var(--anami-branco) !important;
+    color: var(--anami-texto) !important;
+    text-decoration: none !important;
+    transition: border-color var(--anami-transicao), background var(--anami-transicao);
+}
+
+.pagina-categoria .coluna .filtro .atributo-lista a label {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+    font-family: var(--anami-fonte) !important;
+    font-size: 13px !important;
+    color: inherit !important;
+    cursor: pointer;
+}
+
+.pagina-categoria .coluna .filtro .atributo-lista a small { color: var(--anami-texto-suave) !important; }
+
+.pagina-categoria .coluna .filtro .atributo-lista a:hover { border-color: var(--anami-roxo) !important; }
+
+.pagina-categoria .coluna .filtro .atributo-lista li:is(.active, .ativo, .selecionado) a {
+    background: var(--anami-roxo) !important;
+    border-color: var(--anami-roxo) !important;
+    color: var(--anami-branco) !important;
+}
+
+.pagina-categoria .coluna .filtro .atributo-lista li:is(.active, .ativo, .selecionado) a small { color: var(--anami-lavanda-texto) !important; }
+
+/* O texto da categoria saiu daqui e foi para o fim da lista (anami-core.js). */
+.pagina-categoria .coluna .componente[data-anami-movido] { display: none !important; }
+
+/* ---------- 7. CATEGORIA: TEXTO NO FIM DA LISTA ---------- */
+
+.anami-cat-texto {
+    margin: 40px 0 8px;
+    padding: 36px 40px;
+    background: var(--anami-papel);
+    border-radius: var(--anami-raio-bloco);
+    font-family: var(--anami-fonte);
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--anami-texto-suave);
+}
+
+.anami-cat-texto :is(h2, h3) {
+    margin: 0 0 10px !important;
+    font-family: var(--anami-fonte) !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+    color: var(--anami-texto) !important;
+}
+
+.anami-cat-texto h2 { font-size: 26px !important; }
+.anami-cat-texto h3 { font-size: 19px !important; margin-top: 22px !important; }
+.anami-cat-texto p { margin: 0 0 14px !important; }
+.anami-cat-texto strong { color: var(--anami-texto); }
+
+.anami-cat-texto ul { margin: 0 0 18px !important; padding: 0 !important; list-style: none !important; }
+
+.anami-cat-texto li {
+    position: relative;
+    margin: 0 0 8px !important;
+    padding-left: 22px;
+}
+
+.anami-cat-texto li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: .55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--anami-roxo);
+}
+
+/* Caixas que vieram coladas no texto viram cartões brancos. */
+.anami-cat-texto div div {
+    margin: 0 0 14px;
+    padding: 18px 20px;
+    background: var(--anami-branco);
+    border: 1px solid var(--anami-linha);
+    border-radius: var(--anami-raio-card);
+}
+
+.anami-cat-texto div div > :is(h2, h3):first-child { margin-top: 0 !important; }
+.anami-cat-texto div div > :last-child { margin-bottom: 0 !important; }
+
+/* ---------- 8. CELULAR ---------- */
+
+@media screen and (max-width: 768px) {
+    .anami-garantias { gap: 8px; margin: 14px 0 18px !important; }
+    .anami-garantias li { padding: 10px; gap: 8px; font-size: 11.5px; }
+    .anami-garantias strong { font-size: 13px; }
+    .anami-garantias .anami-i { width: 30px; height: 30px; padding: 6px; }
+
+    .pagina-produto #descricao { font-size: 14.5px; }
+    .anami-acordeao > summary { padding: 15px 2px; }
+    .anami-acordeao > summary > h3 { font-size: 17px !important; }
+    .anami-acordeao-corpo table { font-size: 13px; }
+    .anami-acordeao-corpo table :is(th, td) { padding: 8px !important; }
+
+    .pagina-categoria .secao-principal .conteudo > h1 { font-size: 26px !important; margin: 4px 0 10px !important; }
+    .anami-cat-texto { margin: 28px 0 0; padding: 24px 18px; border-radius: var(--anami-raio-card); font-size: 14.5px; }
+    .anami-cat-texto h2 { font-size: 22px !important; }
+    .anami-cat-texto div div { padding: 14px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .anami-acordeao > summary::after,
+    .pagina-categoria .coluna :is(.menu.lateral .nivel-dois a, .filtro .atributo-lista a) { transition: none !important; }
+}
