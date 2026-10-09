@@ -187,6 +187,15 @@ html body .ns-banner-top a {
 
 html body .ns-banner-top a:hover { text-decoration: underline; }
 
+/* Barra do topo: várias frases que se revezam (core.js alterna a classe .anami-ativa).
+   Antes do JS, só a primeira aparece. */
+.ns-banner-top .anami-topo-msg { display: none; }
+.ns-banner-top .anami-topo-msg:first-child { display: inline; }
+.ns-banner-top.anami-rotacao .anami-topo-msg { display: none; }
+.ns-banner-top.anami-rotacao .anami-topo-msg.anami-ativa { display: inline; animation: anami-topo-entra .45s ease; }
+@keyframes anami-topo-entra { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .ns-banner-top.anami-rotacao .anami-topo-msg.anami-ativa { animation: none; } }
+
 @media screen and (max-width: 767px) {
     html body .ns-banner-top .anami-topo-desk { display: none; }
     html body .ns-banner-top .conteiner { font-size: 12.5px !important; }

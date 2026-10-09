@@ -6,7 +6,7 @@
 (function () {
     'use strict';
 
-    var VERSAO = '1.2.0';
+    var VERSAO = '1.2.1';
     var WHATSAPP = '5511950358443';
     var CNPJ = '46.555.995/0001-58';
 
@@ -72,10 +72,18 @@
 
     /* ---------- tracking ---------- */
 
+    /* A Loja Integrada carrega o gtag.js com um dataLayer próprio (LIgtagDataLayer)
+       e não expõe window.gtag. Enviar por ali faz o evento chegar na mesma tag do
+       Google que a loja já usa (Ads + GA4 combinados). O gtag só lê entradas do
+       tipo Arguments, por isso o push é feito dentro de uma função. */
+    function viaLI() { window.LIgtagDataLayer.push(arguments); }
+
     function rastrear(evento, parametros) {
         parametros = parametros || {};
         try {
-            if (typeof window.gtag === 'function') {
+            if (window.LIgtagDataLayer && typeof window.LIgtagDataLayer.push === 'function') {
+                viaLI('event', evento, parametros);
+            } else if (typeof window.gtag === 'function') {
                 window.gtag('event', evento, parametros);
             }
             window.dataLayer = window.dataLayer || [];
@@ -123,6 +131,27 @@
                 pagina: location.pathname
             });
         }, true);
+    }
+
+    /* ---------- 0. barra do topo: alterna as mensagens ---------- */
+
+    /* O tema só aceita um texto fixo na barra. O cabecalho.html manda várias
+       mensagens em <span class="anami-topo-msg">; aqui elas se revezam. */
+    function iniciarBarraTopo() {
+        var barra = document.querySelector('.ns-banner-top');
+        if (!barra || barra.hasAttribute('data-anami-rotacao')) return;
+        var msgs = barra.querySelectorAll('.anami-topo-msg');
+        if (msgs.length < 2) return;
+        barra.setAttribute('data-anami-rotacao', '1');
+        barra.classList.add('anami-rotacao');
+        var i = 0;
+        msgs[0].classList.add('anami-ativa');
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        setInterval(function () {
+            msgs[i].classList.remove('anami-ativa');
+            i = (i + 1) % msgs.length;
+            msgs[i].classList.add('anami-ativa');
+        }, 4500);
     }
 
     /* ---------- 1. cabeçalho: botão "Enviar receita" ---------- */
@@ -336,32 +365,32 @@
 
     var SECOES = {
         credenciais: function () {
-            return '<section class="anami-secao anami-credenciais" data-anami-secao="credenciais" aria-label="Credenciais da Anami">' +
+            return '<section class="anami-secao anami-credenciais" data-anami-secao="credenciais" aria-label="Por que comprar na Anami">' +
                 '<ul>' +
-                '<li><strong>+10 anos</strong>de experiência da farmacêutica-chefe</li>' +
-                '<li><strong>Ativos com laudo</strong>identidade, teor e procedência conferidos</li>' +
-                '<li><strong>AFE e AE Anvisa</strong>autorizações de funcionamento em dia</li>' +
-                '<li><strong>Todo o Brasil</strong>entrega nacional a partir de São Caetano do Sul</li>' +
+                '<li><strong>Receita pelo WhatsApp</strong>foto da prescrição, orçamento grátis e sem sair de casa</li>' +
+                '<li><strong>Farmacêutica no atendimento</strong>quem manipula responde você · CRF-SP 76104</li>' +
+                '<li><strong>Laudo de cada ativo</strong>matéria-prima certificada, conferida lote a lote</li>' +
+                '<li><strong>Entrega em todo o Brasil</strong>envio rastreado ou retirada em São Caetano do Sul</li>' +
                 '</ul></section>';
         },
         como: function () {
             return '<section class="anami-secao anami-como" data-anami-secao="como-funciona" id="anami-receita">' +
                 '<div>' +
                 '<span class="anami-eyebrow">Envie sua receita</span>' +
-                '<h2>Sua receita, manipulada por quem acompanha cada fórmula.</h2>' +
-                '<p class="anami-lead">Mande a foto da prescrição pelo WhatsApp. Nossa farmacêutica responsável revisa a fórmula, envia o orçamento e você recebe em casa.</p>' +
+                '<h2>Sua receita vira fórmula sem você sair de casa.</h2>' +
+                '<p class="anami-lead">Mande a foto da prescrição pelo WhatsApp. A farmacêutica confere, você aprova o orçamento e a fórmula chega na sua porta.</p>' +
                 '<div class="anami-botoes">' +
-                botaoHtml('', 'home-como-funciona', 'Enviar receita pelo WhatsApp', null, true) +
+                botaoHtml('', 'home-como-funciona', 'Enviar receita agora', null, true) +
                 botaoHtml('anami-botao--secundario', 'home-ver-produtos', 'Ver suplementos', '/vitaminas-e-suplementos') +
                 '</div>' +
-                '<p class="anami-nota">' + ICONES.escudo + 'Orçamento sem compromisso, de segunda a sábado</p>' +
+                '<p class="anami-nota">' + ICONES.escudo + 'Orçamento grátis e sem compromisso · segunda a sábado</p>' +
                 '</div>' +
                 '<aside class="anami-rx" aria-label="Como funciona o envio de receita">' +
-                '<div class="anami-rx-topo"><strong>Rx</strong><span>Como funciona<br>o envio de receita</span></div>' +
+                '<div class="anami-rx-topo"><strong>Rx</strong><span>Como funciona,<br>em 3 passos</span></div>' +
                 '<ol class="anami-passos">' +
-                '<li><span class="anami-n">1</span><div><h3>Foto da prescrição</h3><p>Pode ser receita de médico, dentista ou nutricionista.</p></div></li>' +
-                '<li><span class="anami-n">2</span><div><h3>Revisão farmacêutica</h3><p>Conferimos dose, forma e compatibilidade dos ativos antes do orçamento.</p></div></li>' +
-                '<li><span class="anami-n">3</span><div><h3>Manipulação e entrega</h3><p>Fórmula pronta em casa, com retirada em São Caetano do Sul se preferir.</p></div></li>' +
+                '<li><span class="anami-n">1</span><div><h3>Mande a foto</h3><p>Receita de médico, dentista ou nutricionista. Vale foto do papel ou print.</p></div></li>' +
+                '<li><span class="anami-n">2</span><div><h3>A farmacêutica confere</h3><p>Dose, forma e compatibilidade dos ativos. O orçamento chega no seu WhatsApp.</p></div></li>' +
+                '<li><span class="anami-n">3</span><div><h3>Pague e receba</h3><p>Pix, cartão ou boleto. Entrega em todo o Brasil ou retirada em São Caetano do Sul.</p></div></li>' +
                 '</ol>' +
                 '<div class="anami-assinatura"><span>Farmacêutica responsável<br>CRF-SP 76104</span><em>Camilla</em></div>' +
                 '</aside></section>';
@@ -372,39 +401,39 @@
                     icone + '<div><h3>' + titulo + '</h3><p>' + texto + '</p>' + (extra || '') + '</div></a>';
             }
             return '<section class="anami-secao anami-formas" data-anami-secao="o-que-manipulamos">' +
-                '<div class="anami-cabeca"><div><span class="anami-eyebrow">O que manipulamos</span><h2>Fórmulas na forma certa para a sua rotina.</h2></div></div>' +
+                '<div class="anami-cabeca"><div><span class="anami-eyebrow">O que manipulamos</span><h2>Tudo o que a sua rotina pede, na dose certa.</h2></div></div>' +
                 '<div class="anami-bento">' +
                 '<a class="anami-forma anami-forma--principal" href="' + zap(MENSAGEM_RECEITA) + '" target="_blank" rel="noopener noreferrer" data-anami-prescricao data-anami-origem="home-bento">' +
-                ICONES.receita + '<div><h3>Manipulados com receita</h3><p>Cápsulas, gotas, cremes e sachês na dose exata da sua prescrição. Envie a foto e receba o orçamento.</p>' +
+                ICONES.receita + '<div><h3>Manipulados com receita</h3><p>Cápsulas, gotas, cremes e sachês na dose exata da sua prescrição. Orçamento grátis pelo WhatsApp.</p>' +
                 '<span class="anami-botao anami-botao--menta">Enviar receita</span></div></a>' +
-                forma('', '/vitaminas-e-suplementos', ICONES.vitamina, 'Vitaminas e suplementos', 'Vitaminas, minerais e ômega 3 prontos para comprar.') +
+                forma('', '/vitaminas-e-suplementos', ICONES.vitamina, 'Vitaminas e suplementos', 'Vitaminas, minerais e ômega 3 prontos para enviar.') +
                 forma('', '/performance', ICONES.treino, 'Performance', 'Creatina, aminoácidos e pré-treino.') +
-                forma('', '/beleza', ICONES.beleza, 'Beleza', 'Colágeno, pele, cabelos e unhas.') +
-                forma('', '/sublinguais', ICONES.gota, 'Sublinguais', 'Absorção rápida, em gotas.') +
+                forma('', '/beleza', ICONES.beleza, 'Beleza', 'Colágeno e fórmulas para pele, cabelos e unhas.') +
+                forma('', '/sublinguais', ICONES.gota, 'Sublinguais', 'Gotas de absorção rápida, práticas de usar.') +
                 '</div></section>';
         },
         laudo: function () {
             return '<section class="anami-secao" data-anami-secao="laudo" id="anami-laudo">' +
                 '<div class="anami-laudo">' +
                 '<div><span class="anami-eyebrow">Qualidade</span><h2>Cada ativo chega com laudo. E a gente confere.</h2>' +
-                '<p class="anami-lead">Trabalhamos com ativos patenteados e fornecedores qualificados. Antes de entrar em qualquer fórmula, a matéria-prima passa por estas verificações.</p>' +
-                botaoHtml('anami-botao--menta', 'home-laudo', 'Perguntar sobre um laudo', zap('Olá! Quero saber sobre o laudo de um ativo.')) +
+                '<p class="anami-lead">Compramos de fornecedores certificados, como Biotec, Fagron e Galena, e conferimos o laudo de cada lote antes de manipular. Quer ver o laudo do seu ativo? É só pedir.</p>' +
+                botaoHtml('anami-botao--menta', 'home-laudo', 'Pedir o laudo de um ativo', zap('Olá! Quero ver o laudo de um ativo.')) +
                 '</div>' +
                 '<div class="anami-criterios">' +
-                '<details open><summary>Identidade</summary><p>Confirmamos que o ativo é exatamente o que o fornecedor declarou, comparando o laudo com as especificações.</p></details>' +
-                '<details><summary>Teor e pureza</summary><p>O laudo de análise informa a concentração e a ausência de contaminantes dentro dos limites da farmacopeia.</p></details>' +
-                '<details><summary>Procedência</summary><p>Rastreamos lote, fabricante e validade de cada matéria-prima usada na sua fórmula.</p></details>' +
-                '<details><summary>Ativos patenteados</summary><p>Quando a prescrição pede um ativo de marca, usamos o original com certificado do detentor da patente.</p></details>' +
+                '<details open><summary>Identidade</summary><p>O ativo é exatamente o que o fornecedor declarou: comparamos o laudo com a especificação antes de usar.</p></details>' +
+                '<details><summary>Teor e pureza</summary><p>Concentração certa e sem contaminantes, dentro dos limites da farmacopeia.</p></details>' +
+                '<details><summary>Procedência</summary><p>Lote, fabricante e validade de cada matéria-prima ficam registrados na sua fórmula.</p></details>' +
+                '<details><summary>Ativos patenteados</summary><p>Quando a receita pede um ativo de marca, usamos o original, com certificado do fabricante.</p></details>' +
                 '</div></div></section>';
         },
         farmaceutica: function () {
             return '<section class="anami-secao anami-farm" data-anami-secao="farmaceutica" id="anami-farmaceutica">' +
-                '<figure><img class="anami-retrato" src="' + FOTO_CAMILLA + '" alt="Camilla, farmacêutica responsável da Anami, na bancada de manipulação" loading="lazy" width="510" height="510">' +
-                '<figcaption>Camilla na bancada de manipulação da Anami, em São Caetano do Sul.</figcaption></figure>' +
+                '<figure><img class="anami-retrato" src="' + FOTO_CAMILLA + '" alt="Camilla, farmacêutica responsável da Anami, no laboratório de manipulação" loading="lazy" width="510" height="510">' +
+                '<figcaption>Camilla no laboratório da Anami, em São Caetano do Sul.</figcaption></figure>' +
                 '<div><span class="anami-eyebrow">Farmacêutica responsável</span>' +
-                '<p class="anami-citacao">“Gente entende de gente. Antes de manipular, eu quero entender quem vai tomar a fórmula. Por isso respondo pessoalmente as dúvidas sobre cada receita.”</p>' +
-                '<p class="anami-quem"><strong>Camilla C. de Oliveira</strong>Farmacêutica responsável, CRF-SP 76104, há mais de 10 anos na manipulação</p>' +
-                '<div class="anami-botoes">' + botaoHtml('anami-botao--secundario', 'home-farmaceutica', 'Tirar uma dúvida com a farmacêutica', zap('Olá! Quero tirar uma dúvida com a farmacêutica.')) + '</div>' +
+                '<p class="anami-citacao">Quem manipula a sua fórmula tem nome: Camilla.</p>' +
+                '<p class="anami-quem"><strong>Camilla C. de Oliveira</strong>Farmacêutica responsável · CRF-SP 76104. Acompanha cada receita da conferência à entrega e responde pessoalmente as dúvidas pelo WhatsApp.</p>' +
+                '<div class="anami-botoes">' + botaoHtml('anami-botao--secundario', 'home-farmaceutica', 'Falar com a farmacêutica', zap('Olá! Quero tirar uma dúvida com a farmacêutica.')) + '</div>' +
                 '</div></section>';
         },
         depoimentos: function () {
@@ -412,8 +441,8 @@
                 return '<blockquote class="anami-depoimento"><div class="anami-estrelas" aria-label="5 de 5 estrelas">★★★★★</div><p>' + texto + '</p><footer><strong>' + nome + '</strong> · avaliação no Google</footer></blockquote>';
             }
             return '<section class="anami-secao" data-anami-secao="depoimentos">' +
-                '<div class="anami-cabeca"><div><span class="anami-eyebrow">Quem já manipulou com a gente</span><h2>O que os clientes contam.</h2></div>' +
-                '<a class="anami-link" href="https://www.google.com/search?q=Anami+F%C3%B3rmulas+S%C3%A3o+Caetano+do+Sul" target="_blank" rel="noopener noreferrer" data-anami-evento="clique_avaliacoes_google">Ver avaliações no Google</a></div>' +
+                '<div class="anami-cabeca"><div><span class="anami-eyebrow">Avaliações no Google</span><h2>Quem já comprou, recomenda.</h2></div>' +
+                '<a class="anami-link" href="https://www.google.com/search?q=Anami+F%C3%B3rmulas+S%C3%A3o+Caetano+do+Sul" target="_blank" rel="noopener noreferrer" data-anami-evento="clique_avaliacoes_google">Ver todas no Google</a></div>' +
                 '<div class="anami-depoimentos">' +
                 dep('Excelente farmácia de manipulação. Matéria-prima de qualidade com rastreabilidade e, se necessário, enviam laudos das matérias-primas utilizadas na manipulação. Entrega rápida para São Paulo capital e com preço acessível.', 'Ellen L.') +
                 dep('Eu recomendo a Anami Fórmulas. Fiz o pedido via WhatsApp e, em menos de 24 horas após a confirmação do pagamento, recebi em casa os meus manipulados!', 'Márcio F.') +
@@ -422,19 +451,20 @@
         },
         faq: function () {
             return '<section class="anami-secao anami-faq" data-anami-secao="faq">' +
-                '<div><span class="anami-eyebrow">Dúvidas</span><h2>Perguntas sobre manipulação</h2><p class="anami-lead">Não achou a sua? A farmacêutica responde pelo WhatsApp.</p></div>' +
+                '<div><span class="anami-eyebrow">Dúvidas</span><h2>Perguntas de quem compra pela primeira vez</h2><p class="anami-lead">Não achou a sua? A farmacêutica responde pelo WhatsApp.</p></div>' +
                 '<div>' +
-                '<details><summary>Preciso de receita para manipular?</summary><p>Para medicamentos, sim. Suplementos como vitaminas, minerais e aminoácidos podem ser comprados sem receita, direto na loja.</p></details>' +
-                '<details><summary>Quanto tempo leva para a fórmula ficar pronta?</summary><p>Informamos o prazo de manipulação junto com o orçamento. O prazo de entrega depende do seu CEP e aparece no carrinho.</p></details>' +
-                '<details><summary>Vocês entregam fora de São Paulo?</summary><p>Sim, entregamos em todo o Brasil. Em São Caetano do Sul também é possível retirar na farmácia.</p></details>' +
-                '<details><summary>Posso tirar dúvidas sobre a minha prescrição?</summary><p>Pode. A farmacêutica responsável explica como tomar e armazenar a fórmula. Mudanças de dose são sempre com quem prescreveu.</p></details>' +
+                '<details><summary>Preciso de receita para comprar?</summary><p>Só para medicamentos manipulados. Vitaminas, minerais, creatina e outros suplementos você compra direto na loja, sem receita.</p></details>' +
+                '<details><summary>Quanto tempo leva para ficar pronto?</summary><p>O prazo de manipulação vem junto com o orçamento. O prazo de entrega depende do seu CEP e aparece no carrinho antes de pagar.</p></details>' +
+                '<details><summary>Vocês entregam na minha cidade?</summary><p>Sim, enviamos para todo o Brasil com rastreio. Em São Caetano do Sul e região você também pode retirar na farmácia.</p></details>' +
+                '<details><summary>Como posso pagar?</summary><p>Pix, cartão de crédito ou boleto, na loja ou pelo WhatsApp.</p></details>' +
+                '<details><summary>Posso tirar dúvidas sobre a minha receita?</summary><p>Pode. A farmacêutica explica como tomar e guardar a fórmula. Mudança de dose, só com quem prescreveu.</p></details>' +
                 '</div></section>';
         },
         cta: function () {
             return '<section class="anami-secao" data-anami-secao="cta-final">' +
                 '<div class="anami-cta-final">' + ICONES.coracao +
-                '<div><h2>Tem uma receita em mãos?</h2><p>Mande a foto agora e receba o orçamento da sua fórmula pelo WhatsApp.</p></div>' +
-                botaoHtml('', 'home-cta-final', 'Enviar receita pelo WhatsApp', null, true) +
+                '<div><h2>Receita na mão? Orçamento em um clique.</h2><p>Mande a foto agora pelo WhatsApp. A farmacêutica confere e você recebe o valor, sem compromisso.</p></div>' +
+                botaoHtml('', 'home-cta-final', 'Enviar receita agora', null, true) +
                 '</div></section>';
         }
     };
@@ -489,7 +519,7 @@
         });
 
         quandoTemaPronto(function () {
-            [iniciarCabecalho, iniciarMenu, iniciarFlutuante, iniciarHome].forEach(function (m) {
+            [iniciarBarraTopo, iniciarCabecalho, iniciarMenu, iniciarFlutuante, iniciarHome].forEach(function (m) {
                 try { m(); } catch (e) { if (window.console) console.warn('[anami] falha em ' + m.name, e); }
             });
             aoMudarEstado(function () {

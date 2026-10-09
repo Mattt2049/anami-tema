@@ -19,8 +19,8 @@ A loja usa o tema comprado **NVitrine (nsdigital)**, que monta cabeçalho, menu 
 ## Fluxo de release
 
 1. Editar, commitar e subir para `main`.
-2. Criar tag: `git tag v1.0.1 && git push --tags`.
-3. No painel, trocar `@v1.0.0` por `@v1.0.1` (cabeçalho e rodapé).
+2. Criar tag: `git tag v1.2.2 && git push --tags`.
+3. No painel, trocar `@v1.2.1` por `@v1.2.2` no cabeçalho (o rodapé não carrega mais arquivos do CDN).
 
 O `.min` no final da URL é gerado automaticamente pelo jsDelivr; não precisa versionar arquivos minificados.
 
@@ -30,7 +30,7 @@ O `.min` no final da URL é gerado automaticamente pelo jsDelivr; não precisa v
 
 ## Tracking
 
-O `anami-core.js` envia para `gtag` e `dataLayer`:
+O `anami-core.js` envia os eventos para a tag do Google que a loja já carrega (`LIgtagDataLayer`, gtag.js da Loja Integrada com o ID do Google Ads e o GA4 combinado), ou para `window.gtag` se existir, e sempre para `window.dataLayer`:
 
 - `enviar_prescricao`: clique no CTA de prescrição (origem, produto, página).
 - `clique_whatsapp`: qualquer outro link de WhatsApp da loja.
